@@ -1,9 +1,71 @@
-:root {
-  --font-display:
-    Spline Sans, Inter, ui-sans-serif, system-ui, sans-serif, Apple Color Emoji, Segoe UI Emoji,
-    Segoe UI Symbol, Noto Color Emoji;
-  --font-mono:
-    ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, Liberation Mono, Courier New, monospace;
-  --font-rounded: 'SF Pro Rounded', 'Hiragino Maru Gothic ProN', Meiryo, 'MS PGothic', sans-serif;
-  --font-serif: Georgia, 'Times New Roman', serif;
+@import "tailwindcss/theme.css" layer(theme);
+@import "tailwindcss/preflight.css" layer(base);
+@import "tailwindcss/utilities.css";
+ 
+@import "nativewind/theme";
+
+@theme {
+    /* background */
+    --color-background: #0F172A;
+    
+    /* candles */
+    --color-up: #00ff66;
+    --color-down: #EF4444;
+    --color-ceil: #A855F7;
+    --color-floor: #38BDF8;
+    --color-nochange: #ffd900;
+    
+    /* */
+    --color-c5: #F8FAFC;
+    --color-c4: #d8d8d8;
+    --color-c3: #a3a3a3;
+    --color-c2: #767676;
+    --color-blur: #858585;
+    --color-card-c5: #192536;
+    --color-card-c3: #1E293B;
+}
+
+:root.light {
+    --color-background: white;
+}
+
+@layer components {
+    /* ui */
+    .button {
+        @apply bg-c5 p-3 rounded-md active:opacity-70;
+    }
+    .button-text {
+        @apply text-background font-semibold;
+    }
+
+    /* industry */
+    .industry-card {
+        @apply bg-card-c5 gap-1 py-5 px-2 rounded-lg h-36 w-[50%]
+    }
+
+    .industry-card-top {
+        @apply h-[50%]
+    }
+
+    .industry-card-bottom {
+        @apply h-[50%]
+    }
+
+    .industry-card-title {}
+
+    .industry-card-title-text {
+        @apply text-xl text-c5 font-bold
+    }
+
+    .industry-card-meta-row {
+        @apply flex-row justify-between items-end
+    }
+
+    .industry-card-pe {
+        @apply text-base text-c4 
+    }
+
+    .industry-card-percent {
+        @apply text-lg font-bold
+    }
 }
