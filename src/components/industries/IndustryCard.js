@@ -1,12 +1,13 @@
 import { colors } from "@/constants/colors";
 import clsx from "clsx";
 import { useMemo, useState } from "react";
-import { Pressable, Text, View } from "react-native";
+import { Pressable, Text, useWindowDimensions, View } from "react-native";
 import { LineChart } from "react-native-gifted-charts";
 import { s } from "react-native-size-matters";
 
-const IndustryCard = ({ industryCode, industryData }) => {
-    const [chartSize, setChartSize] = useState({});
+const IndustryCard = ({ industryData }) => {
+    const [chartHeight, setChartHeight] = useState();
+    const { width: windowWidth } = useWindowDimensions();
 
     const calculatedData = useMemo(() => {
         const length = industryData.length;
@@ -33,56 +34,50 @@ const IndustryCard = ({ industryCode, industryData }) => {
     }, [industryData]);
 
     const chartConfig = useMemo(() => {
-        if (!calculatedData || !chartSize.height || !chartSize.width) return;
+        if (!calculatedData || !chartHeight) return;
 
         const data = calculatedData.data.map((data) => ({
             value: data.indexValues.IndexClose,
         }));
 
         const yAxisExtraHeight = s(0);
-        const xAxisLabelsHeight = s(0);
-        const chartHeight =
-            chartSize.height - yAxisExtraHeight - xAxisLabelsHeight;
+        const xAxisLabelsHeight = s(10);
+        const height = chartHeight - yAxisExtraHeight - xAxisLabelsHeight;
         const yAxisLabelWidth = s(0);
         const endSpacing = s(5);
-        const chartWidth = chartSize.width - yAxisLabelWidth - endSpacing;
-
-        const rawMin = calculatedData.min;
-        const rawMax = calculatedData.max;
-        const range = rawMax - rawMin;
-
-        const padding = Math.max(2, range * 0.1);
-        const visualMin = Math.floor(rawMin - padding);
-        const visualMax = Math.ceil(rawMax + padding);
-
-        const yAxisOffset = visualMin;
-        const maxValue = visualMax - visualMin;
+        const width = windowWidth / 2.2 - yAxisLabelWidth - endSpacing - s(10);
+        const color =
+            calculatedData.percent > 0
+                ? colors.dark.up
+                : calculatedData.percent < 0
+                  ? colors.dark.down
+                  : colors.dark.noChange;
 
         return {
             data,
             yAxisExtraHeight,
             xAxisLabelsHeight,
-            chartHeight,
+            height,
             yAxisLabelWidth,
             endSpacing,
-            chartWidth,
-            yAxisOffset,
-            maxValue,
+            width,
+            color,
         };
-    }, [chartSize, calculatedData]);
-
-    // console.log(chartConfig);
-
-    // if (!chartConfig && !calculatedData) {
-    //     return <ActivityIndicator />;
-    // }
+    }, [chartHeight, calculatedData]);
 
     return (
-        <Pressable className="industry-card">
+        <Pressable
+            style={{ width: windowWidth / 2.2 }}
+            className="industry-card"
+        >
             {/* Top */}
             <View className="industry-card-top">
                 <View className="industry-card-title">
-                    <Text className="industry-card-title-text">
+                    <Text
+                        numberOfLines={1}
+                        ellipsizeMode="tail"
+                        className="industry-card-title-text"
+                    >
                         {calculatedData?.title || ""}
                     </Text>
                 </View>
@@ -116,49 +111,35 @@ const IndustryCard = ({ industryCode, industryData }) => {
             <View
                 className="industry-card-bottom"
                 onLayout={(e) => {
-                    const { height, width } = e.nativeEvent.layout;
-                    if (
-                        height !== chartSize.height ||
-                        width !== chartSize.width
-                    )
-                        setChartSize({ height, width });
+                    const { height } = e.nativeEvent.layout;
+                    if (height !== chartHeight) setChartHeight(height);
                 }}
             >
                 {chartConfig && (
                     <LineChart
-                        // backgroundColor="gray"
                         data={chartConfig.data}
-                        color="green"
+                        color={chartConfig.color}
                         hideDataPoints
-                        // areaChart
+                        areaChart
+                        startFillColor={chartConfig.color}
+                        endFillColor="transparent"
+                        startOpacity={0.3}
+                        endOpacity={0.2}
                         thickness={s(1)}
                         yAxisExtraHeight={chartConfig.yAxisExtraHeight}
                         xAxisLabelsHeight={chartConfig.xAxisLabelsHeight}
-                        height={chartConfig.chartHeight}
+                        height={chartConfig.height}
                         hideRules
                         initialSpacing={0}
-                        // yAxisLabelWidth={chartConfig.yAxisLabelWidth}
-                        noOfSections={2}
+                        yAxisLabelWidth={chartConfig.yAxisLabelWidth}
                         endSpacing={chartConfig.endSpacing}
-                        width={chartConfig.chartWidth}
-                        maxValue={chartConfig.maxValue}
-                        yAxisOffset={chartConfig.yAxisOffset}
+                        width={chartConfig.width}
+                        adjustToWidth
+                        disableScroll
+                        yAxisOffset={Math.floor(calculatedData.min)}
                         yAxisThickness={0}
                         xAxisType="dashed"
-                        xAxisColor={colors.light.background}
-                        pointerConfig={{
-                            pointerComponent: (item) => {
-                                console.log(item);
-
-                                return (
-                                    <View>
-                                        <Text className="text-c5">
-                                            {item.value}
-                                        </Text>
-                                    </View>
-                                );
-                            },
-                        }}
+                        xAxisColor={colors.dark.blur}
                     />
                 )}
             </View>

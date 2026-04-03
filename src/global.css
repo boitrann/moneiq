@@ -1,31 +1,33 @@
 @import "tailwindcss/theme.css" layer(theme);
 @import "tailwindcss/preflight.css" layer(base);
 @import "tailwindcss/utilities.css";
- 
+
 @import "nativewind/theme";
 
 @theme {
     /* background */
-    --color-background: #0F172A;
-    
+    --color-background: #0f172a;
+
     /* candles */
-    --color-up: #00ff66;
-    --color-down: #EF4444;
-    --color-ceil: #A855F7;
-    --color-floor: #38BDF8;
+    --color-up: #00c27f;
+    --color-down: #ee3d3e;
+    --color-ceil: #a855f7;
+    --color-floor: #38bdf8;
     --color-nochange: #ffd900;
-    
+
     /* */
-    --color-c5: #F8FAFC;
+    --color-c5: #f8fafc;
     --color-c4: #d8d8d8;
     --color-c3: #a3a3a3;
     --color-c2: #767676;
     --color-blur: #858585;
     --color-card-c5: #192536;
-    --color-card-c3: #1E293B;
+    --color-card-c3: #1e293b;
+    --color-card-c1: #172237;
 }
 
 :root.light {
+    --color-picker: #172237;
     --color-background: white;
 }
 
@@ -40,32 +42,34 @@
 
     /* industry */
     .industry-card {
-        @apply bg-card-c5 gap-1 py-5 px-2 rounded-lg h-36 w-[50%]
+        @apply bg-card-c1 gap-2 p-2 rounded-lg h-32;
     }
 
     .industry-card-top {
-        @apply h-[50%]
+        @apply h-[50%];
     }
 
     .industry-card-bottom {
-        @apply h-[50%]
+        @apply h-[50%];
     }
 
-    .industry-card-title {}
+    .industry-card-title {
+        /* @apply border border-c5; */
+    }
 
     .industry-card-title-text {
-        @apply text-xl text-c5 font-bold
+        @apply text-base text-c4 font-bold;
     }
 
     .industry-card-meta-row {
-        @apply flex-row justify-between items-end
+        @apply flex-row justify-between items-end;
     }
 
     .industry-card-pe {
-        @apply text-base text-c4 
+        @apply text-sm text-c3;
     }
 
     .industry-card-percent {
-        @apply text-lg font-bold
+        @apply text-sm;
     }
 }
