@@ -1,25 +1,35 @@
-import { colors } from "@/constants/colors";
 import dayjs from "dayjs";
-import { useMemo, useState } from "react";
+import { memo, useMemo, useState } from "react";
 import { Text, View } from "react-native";
 import { LineChart } from "react-native-gifted-charts";
 import { s } from "react-native-size-matters";
 
-const StatisticCard = ({
+const StatisticChart = ({
     data,
+    key1,
+    key2,
+    color1,
+    color2,
+    lineType1 = "solid",
+    lineType2 = "solid",
+    labelColor,
+    yLabelThreshold1,
+    yLabelThreshold2,
     height = s(180),
     width = "100%",
-    textSize = s(8),
+    textSize = s(9),
 }) => {
+    // if (!key1.includes("vol")) console.log(key1, "re-render");
+
     const [containerSize, setContainerSize] = useState({});
 
     const processedData = useMemo(() => {
         const length = data.message.length;
-        const short = data.message.map((msg, idx) => {
+        const arr1 = data.message.map((msg, idx) => {
             const isLabelled = idx === 0 || idx === Math.round(length / 2);
             const isLastPoint = idx === length - 1;
             return {
-                value: msg["1w_ma20_vol"],
+                value: msg[key1],
                 ...(isLabelled || isLastPoint
                     ? {
                           labelComponent: () => (
@@ -29,14 +39,12 @@ const StatisticCard = ({
                                       width: textSize * 3,
                                       justifyContent: "center",
                                       marginLeft: isLastPoint && s(-20),
-                                      //   borderWidth: 1,
-                                      //   borderColor: "white",
                                   }}
                               >
                                   <Text
                                       style={{
                                           fontSize: textSize,
-                                          color: colors.dark.blur,
+                                          color: labelColor,
                                       }}
                                   >
                                       {dayjs(msg.trading_date).format("DD/MM")}
@@ -47,34 +55,31 @@ const StatisticCard = ({
                     : {}),
             };
         });
-        const long = data.message.map((msg) => ({ value: msg["1m_ma50_vol"] }));
+        const arr2 = data.message.map((msg) => ({ value: msg[key2] }));
         const max = Math.max(
-            ...short.map((v) => v.value),
-            ...long.map((v) => v.value),
-            // 100,
+            ...arr1.map((v) => v.value),
+            ...arr2.map((v) => v.value),
         );
 
-        return { short, long, max };
+        return { arr1, arr2, max };
     }, [data]);
 
     const chartConfig = useMemo(() => {
         if (Object.keys(containerSize).length === 0) return;
         const max = processedData.max;
-        let noOfSections, maxValue, yAxisLabelWidth;
-        if (max <= 60) {
+        let noOfSections, maxValue;
+        if (max <= yLabelThreshold1) {
             noOfSections = 3;
-            maxValue = 60;
-            yAxisLabelWidth = s(25);
-        } else if (max <= 80) {
+            maxValue = yLabelThreshold1;
+        } else if (max <= yLabelThreshold2) {
             noOfSections = 4;
-            maxValue = 80;
-            yAxisLabelWidth = s(25);
+            maxValue = yLabelThreshold2;
         } else {
             noOfSections = 5;
             maxValue = 100;
-            yAxisLabelWidth = s(30);
         }
 
+        const yAxisLabelWidth = textSize * 3.5;
         const endSpacing = s(5);
         const initialSpacing = s(10);
         const width = containerSize.width - yAxisLabelWidth - endSpacing;
@@ -99,7 +104,6 @@ const StatisticCard = ({
 
     return (
         <View
-            className="statistic-card"
             style={{ width, height }}
             onLayout={(e) => {
                 if (containerSize.width) return;
@@ -116,17 +120,18 @@ const StatisticCard = ({
                     areaChart1
                     width={chartConfig.width}
                     height={chartConfig.height}
-                    data={processedData.short}
-                    color={colors.dark.up500}
-                    startFillColor={colors.dark.up}
+                    data={processedData.arr1}
+                    color={color1}
+                    startFillColor={color1}
                     endFillColor="transparent"
-                    startOpacity="0.5"
+                    startOpacity="0.4"
                     endOpacity="0.1"
                     thickness={s(1.5)}
-                    data2={processedData.long}
-                    color2={colors.dark.floor}
+                    data2={processedData.arr2}
+                    color2={color2}
                     thickness2={s(1.5)}
-                    strokeDashArray2={[4, 3]}
+                    strokeDashArray1={lineType1 == "dashed" ? [4, 3] : null}
+                    strokeDashArray2={lineType2 == "dashed" ? [4, 3] : null}
                     noOfSections={chartConfig.noOfSections}
                     maxValue={chartConfig.maxValue}
                     rulesType="dashed"
@@ -136,12 +141,12 @@ const StatisticCard = ({
                     yAxisLabelSuffix="%"
                     yAxisThickness={0}
                     yAxisTextStyle={{
-                        color: colors.dark.blur,
+                        color: labelColor,
                         fontSize: textSize,
                     }}
                     yAxisExtraHeight={chartConfig.yAxisExtraHeight}
-                    rulesColor={colors.dark.blur}
-                    xAxisColor={colors.dark.blur}
+                    rulesColor={labelColor}
+                    xAxisColor={labelColor}
                     xAxisLabelsHeight={chartConfig.xAxisLabelsHeight}
                 />
             )}
@@ -149,4 +154,4 @@ const StatisticCard = ({
     );
 };
 
-export default StatisticCard;
+export default memo(StatisticChart);

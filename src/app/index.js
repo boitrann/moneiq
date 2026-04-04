@@ -5,7 +5,7 @@ import { Text, View } from "react-native";
 export default function Index() {
     return (
         <View className="flex-1 items-center justify-center">
-            <Text className="text-xl font-bold text-c5">
+            <Text className="text-xl font-bold text-neutral-500">
                 Welcome to Moneiq!
             </Text>
             <Button

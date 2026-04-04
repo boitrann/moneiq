@@ -1,6 +1,6 @@
 import IndustryCard from "@/components/industries/IndustryCard";
 import { INDUSTRIES_HISTORICAL } from "@/constants/data";
-import { useMemo } from "react";
+import { useCallback, useMemo } from "react";
 import { FlatList, View } from "react-native";
 
 const industries = () => {
@@ -21,6 +21,8 @@ const industries = () => {
             .sort((a, b) => b[2] - a[2]);
     }, []);
 
+    const onPressCard = useCallback(() => {}, []);
+
     return (
         <View>
             <FlatList
@@ -28,7 +30,10 @@ const industries = () => {
                 data={data}
                 keyExtractor={(item) => item[0]}
                 renderItem={({ item }) => (
-                    <IndustryCard industryData={item[1]} />
+                    <IndustryCard
+                        onPress={onPressCard}
+                        industryData={item[1]}
+                    />
                 )}
                 showsHorizontalScrollIndicator={false}
                 ItemSeparatorComponent={() => <View className="w-2" />}

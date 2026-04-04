@@ -9,11 +9,11 @@ const SafeAreaView = styled(RNSafeAreaView);
 export default function RootLayout() {
     const theme = "dark";
     return (
-        <SafeAreaView className="flex-1 bg-background p-5">
+        <SafeAreaView className="flex-1 bg-bg-base p-5">
             <Stack
                 screenOptions={{
                     headerShown: false,
-                    contentStyle: { backgroundColor: colors[theme].background },
+                    contentStyle: { backgroundColor: colors[theme].bgBase },
                 }}
             />
         </SafeAreaView>

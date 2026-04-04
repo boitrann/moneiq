@@ -6,24 +6,28 @@
 
 @theme {
     /* background */
-    --color-background: #0f172a;
+    --color-bg-base: #0f172a;
+    --color-icon: #E4212E;
 
     /* candles */
-    --color-up: #00c27f;
-    --color-down: #ee3d3e;
-    --color-ceil: #a855f7;
-    --color-floor: #40c4ff;
-    --color-nochange: #ffd900;
+    --color-candle-up: #00c27f;
+    --color-candle-down: #ee3d3e;
+    --color-candle-ceil: #a855f7;
+    --color-candle-floor: #40c4ff;
+    --color-candle-flat: #ffd900;
 
-    /* */
-    --color-c5: #f8fafc;
-    --color-c4: #d8d8d8;
-    --color-c3: #a3a3a3;
-    --color-c2: #767676;
-    --color-blur: #858585;
-    --color-card-c5: #192536;
-    --color-card-c3: #1e293b;
-    --color-card-c1: #172237;
+    /* text */
+    --color-neutral-500: #f8fafc;
+    --color-neutral-400: #d8d8d8;
+    --color-neutral-300: #a3a3a3;
+    --color-neutral-200: #767676;
+    --color-neutral-blur: #858585;
+    --color-accent: #6E6EC4;
+
+    /* surfaces, card */
+    --color-surface-500: #192536;
+    --color-surface-300: #1e293b;
+    --color-surface-100: #172237;
 }
 
 :root.light {
@@ -34,21 +38,58 @@
 @layer components {
     /* ui */
     .button {
-        @apply bg-c5 p-3 rounded-md active:opacity-70;
+        @apply bg-neutral-500 p-3 rounded-md active:opacity-70;
     }
     .button-text {
-        @apply text-background font-semibold;
+        @apply text-bg-base font-semibold;
+    }
+
+    .card {
+        @apply bg-surface-100 rounded-xl shadow-lg;
     }
 
     /* statistic */
-    .statistic-card {
-        @apply bg-card-c1 rounded-lg;
+    .statistic-title-row {
+        @apply flex-row justify-between
     }
 
-    /* industry */
-    .industry-card {
-        @apply bg-card-c1 gap-2 p-2 rounded-lg h-32;
+    .statistic-title-group {
+        @apply flex-row items-center gap-2
     }
+
+    .statistic-title {
+        @apply text-neutral-500 text-lg font-bold
+    }
+
+    .statistic-comment {
+        @apply border border-neutral-500 size-6 rounded-full active:opacity-50
+    }
+
+    .statistic-comment-text {
+        @apply text-neutral-500 text-sm text-center
+    }
+
+    .statistic-legend-groups {
+        @apply flex-row justify-between gap-5
+    }
+
+    .statistic-legend-group {
+        @apply flex-row justify-between items-center gap-2
+    }
+
+    .statistic-legend-icon-1 {
+        @apply bg-candle-up size-3 rounded-full
+    }
+    .statistic-legend-icon-2 {
+        @apply bg-candle-floor size-3 rounded-full
+    }
+
+    .statistic-legend-text {
+        @apply text-lg text-neutral-500
+    }
+
+
+    /* industry */
 
     .industry-card-top {
         @apply h-[50%];
@@ -59,7 +100,7 @@
     }
 
     .industry-card-title-text {
-        @apply text-base text-c4 font-bold;
+        @apply text-base text-neutral-400 font-bold;
     }
 
     .industry-card-meta-row {
@@ -67,7 +108,7 @@
     }
 
     .industry-card-pe {
-        @apply text-sm text-c3;
+        @apply text-sm text-neutral-300;
     }
 
     .industry-card-percent {

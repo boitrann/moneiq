@@ -48,10 +48,10 @@ const IndustryCard = ({ industryData, onPress }) => {
         const width = windowWidth / 2.2 - yAxisLabelWidth - endSpacing - s(10);
         const color =
             calculatedData.percent > 0
-                ? colors.dark.up
+                ? colors.dark.candleUp
                 : calculatedData.percent < 0
-                  ? colors.dark.down
-                  : colors.dark.noChange;
+                  ? colors.dark.candleDown
+                  : colors.dark.candleFlat;
 
         return {
             data,
@@ -69,7 +69,7 @@ const IndustryCard = ({ industryData, onPress }) => {
         <Pressable
             onPress={onPress}
             style={{ width: windowWidth / 2.2 }}
-            className="industry-card active:opacity-70"
+            className="card h-32 p-2 gap-2 active:opacity-70"
         >
             {/* Top */}
             <View className="industry-card-top">
@@ -93,10 +93,10 @@ const IndustryCard = ({ industryData, onPress }) => {
                             className={clsx(
                                 "industry-card-percent",
                                 calculatedData?.percent > 0
-                                    ? "text-up"
+                                    ? "text-candle-up"
                                     : calculatedData?.percent < 0
-                                      ? "text-down"
-                                      : "text-nochange",
+                                      ? "text-candle-down"
+                                      : "text-candle-flat",
                             )}
                         >
                             {calculatedData?.percent != null
@@ -140,7 +140,7 @@ const IndustryCard = ({ industryData, onPress }) => {
                         yAxisOffset={Math.floor(calculatedData.min)}
                         yAxisThickness={0}
                         xAxisType="dashed"
-                        xAxisColor={colors.dark.blur}
+                        xAxisColor={colors.dark.neutralBlur}
                     />
                 )}
             </View>
