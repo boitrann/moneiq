@@ -12,7 +12,7 @@
     --color-up: #00c27f;
     --color-down: #ee3d3e;
     --color-ceil: #a855f7;
-    --color-floor: #38bdf8;
+    --color-floor: #40c4ff;
     --color-nochange: #ffd900;
 
     /* */
@@ -27,8 +27,8 @@
 }
 
 :root.light {
-    --color-picker: #172237;
-    --color-background: white;
+    --color-picker: #00904a;
+    /* --color-background: white; */
 }
 
 @layer components {
@@ -38,6 +38,11 @@
     }
     .button-text {
         @apply text-background font-semibold;
+    }
+
+    /* statistic */
+    .statistic-card {
+        @apply bg-card-c1 rounded-lg;
     }
 
     /* industry */
@@ -51,10 +56,6 @@
 
     .industry-card-bottom {
         @apply h-[50%];
-    }
-
-    .industry-card-title {
-        /* @apply border border-c5; */
     }
 
     .industry-card-title-text {

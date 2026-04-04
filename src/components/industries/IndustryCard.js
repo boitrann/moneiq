@@ -1,11 +1,11 @@
 import { colors } from "@/constants/colors";
 import clsx from "clsx";
-import { useMemo, useState } from "react";
+import { memo, useMemo, useState } from "react";
 import { Pressable, Text, useWindowDimensions, View } from "react-native";
 import { LineChart } from "react-native-gifted-charts";
 import { s } from "react-native-size-matters";
 
-const IndustryCard = ({ industryData }) => {
+const IndustryCard = ({ industryData, onPress }) => {
     const [chartHeight, setChartHeight] = useState();
     const { width: windowWidth } = useWindowDimensions();
 
@@ -67,12 +67,13 @@ const IndustryCard = ({ industryData }) => {
 
     return (
         <Pressable
+            onPress={onPress}
             style={{ width: windowWidth / 2.2 }}
-            className="industry-card"
+            className="industry-card active:opacity-70"
         >
             {/* Top */}
             <View className="industry-card-top">
-                <View className="industry-card-title">
+                <View>
                     <Text
                         numberOfLines={1}
                         ellipsizeMode="tail"
@@ -147,4 +148,4 @@ const IndustryCard = ({ industryData }) => {
     );
 };
 
-export default IndustryCard;
+export default memo(IndustryCard);
