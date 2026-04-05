@@ -1,22 +1,26 @@
-import { colors } from "@/constants/colors";
+import { themes } from "@/constants/themes";
 import "@/global.css";
 import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { styled } from "nativewind";
 import { SafeAreaView as RNSafeAreaView } from "react-native-safe-area-context";
 
+import { Appearance } from "react-native";
+
 const SafeAreaView = styled(RNSafeAreaView);
 
 export default function RootLayout() {
-    const theme = "dark";
+    Appearance.setColorScheme("light");
+    const theme = Appearance.getColorScheme();
+
     return (
         <>
-            <StatusBar style="light" />
-            <SafeAreaView className="flex-1 bg-bg-base p-5">
+            <SafeAreaView className="flex-1 bg-brand dark:bg-[#0F172A] p-5">
+                <StatusBar style={theme === "light" ? "dark" : "light"} />
                 <Stack
                     screenOptions={{
                         headerShown: false,
-                        contentStyle: { backgroundColor: colors[theme].bgBase },
+                        contentStyle: { backgroundColor: themes[theme].brand },
                     }}
                 />
             </SafeAreaView>

@@ -1,3 +1,4 @@
+import { themes } from "@/constants/themes";
 import dayjs from "dayjs";
 import { memo, useMemo, useState } from "react";
 import { Text, View } from "react-native";
@@ -123,9 +124,9 @@ const StatisticChart = ({
                     data={processedData.arr1}
                     color={color1}
                     startFillColor={color1}
-                    endFillColor="transparent"
-                    startOpacity="0.4"
-                    endOpacity="0.1"
+                    endFillColor={color1}
+                    startOpacity="0.3"
+                    endOpacity="0"
                     thickness={s(1.5)}
                     data2={processedData.arr2}
                     color2={color2}
@@ -145,7 +146,8 @@ const StatisticChart = ({
                         fontSize: textSize,
                     }}
                     yAxisExtraHeight={chartConfig.yAxisExtraHeight}
-                    rulesColor={labelColor}
+                    rulesColor={themes.light.blur}
+                    rulesThickness={s(1.5)}
                     xAxisColor={labelColor}
                     xAxisLabelsHeight={chartConfig.xAxisLabelsHeight}
                     pointerConfig={{
@@ -198,7 +200,7 @@ const StatisticChart = ({
                                                     .map((_, idx) => (
                                                         <View
                                                             key={idx}
-                                                            className="h-1 w-1.5 bg-candle-floor"
+                                                            className="h-1 w-1.5 bg-candle-down"
                                                         />
                                                     ))}
                                             </View>

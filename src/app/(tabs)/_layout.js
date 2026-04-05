@@ -1,15 +1,16 @@
-import { colors } from "@/constants/colors";
 import { tabs } from "@/constants/data";
+import { themes } from "@/constants/themes";
 import { Tabs } from "expo-router";
+import { Appearance } from "react-native";
 
 export default function TabsLayout() {
-    const theme = "dark";
+    const theme = Appearance.getColorScheme();
     return (
         <Tabs
             screenOptions={{
                 headerShown: false,
-                sceneStyle: { backgroundColor: colors[theme].background },
-                tabBarStyle: { backgroundColor: colors[theme].background },
+                sceneStyle: { backgroundColor: themes[theme].brand },
+                tabBarStyle: { brandColor: themes[theme].brand },
             }}
         >
             {tabs.map((tab) => (

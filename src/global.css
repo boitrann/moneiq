@@ -6,53 +6,46 @@
 
 @theme {
     /* background */
-    --color-bg-base: #0f172a;
-    --color-icon: #e4212e;
-    --color-neutral: #f8fafc;
+    --color-brand: #ffffff;
+    --color-primary: #000000;
+    --color-secondary: #0f0f0f;
+    --color-blur: #e9e9e9;
 
     /* candles */
-    --color-candle-up: #00c27f;
-    --color-candle-down: #ee3d3e;
+    --color-candle-up: #089981;
+    --color-candle-down: #f23644;
     --color-candle-ceil: #a855f7;
     --color-candle-floor: #40c4ff;
     --color-candle-flat: #ffd900;
-
-    /* text */
-    --color-neutral-blur: #858585;
-    --color-accent: #6e6ec4;
-    --color-accent-yellow: #392d1f;
-    --color-accent-orange: #f86a35;
-
-    /* surfaces, card */
-    --color-surface-500: #192536;
-    --color-surface-300: #1e293b;
-    --color-surface-100: #172237;
 }
 
 :root.light {
-    --color-picker: #5d5d86;
+    --color-picker: #ffffff;
     /* --color-background: white; */
 }
 
 @layer components {
     /* ui */
     .button {
-        @apply bg-neutral p-3 rounded-md active:opacity-70;
+        @apply bg-primary p-3 rounded-md active:opacity-70;
     }
-    .button-text {
-        @apply text-bg-base font-bold;
+    .button-title {
+        @apply text-brand font-bold;
     }
 
+    .flat-card {
+        @apply bg-brand border border-blur rounded-xl  p-5;
+    }
     .card {
-        @apply bg-neutral/5 rounded-xl shadow-lg p-5;
+        @apply bg-blur rounded-xl shadow-sm p-5;
     }
 
     .annotation-icon {
-        @apply border border-neutral size-6 rounded-full justify-center items-center active:opacity-50;
+        @apply border border-primary size-6 rounded-full justify-center items-center active:opacity-50;
     }
 
     .annotation-text {
-        @apply text-neutral text-sm;
+        @apply text-primary text-sm;
     }
 
     /* statistic */
@@ -65,7 +58,7 @@
     }
 
     .statistic-title {
-        @apply text-neutral text-lg font-bold;
+        @apply text-primary text-lg font-bold;
     }
 
     .statistic-legend-groups {
@@ -80,53 +73,45 @@
         @apply bg-candle-up size-3 rounded-full;
     }
     .statistic-legend-icon-2 {
-        @apply bg-candle-floor size-3 rounded-full;
+        @apply bg-candle-down size-3 rounded-full;
     }
 
     .statistic-legend-text {
-        @apply text-lg text-neutral;
+        @apply text-lg text-primary;
     }
 
     .statistic-pointer-card {
-        @apply bg-neutral/10 gap-2 p-2 w-30 rounded-lg shadow-lg;
+        @apply mt-3 bg-brand gap-2 p-2 w-30 rounded-lg shadow-lg;
     }
 
     .statistic-pointer-date {
-        @apply text-neutral font-bold;
+        @apply text-primary font-bold;
     }
 
     .statictic-pointer-row {
         @apply flex-row items-center gap-2;
     }
 
-    .statictic-pointer-icon {
-        /* @apply; */
-    }
-
     .statistic-pointer-value {
-        @apply text-neutral font-bold;
+        @apply text-primary font-semibold;
     }
 
     /* industry */
 
     .industry-card-top {
-        @apply h-[50%];
+        @apply flex-1;
     }
 
     .industry-card-bottom {
-        @apply h-[50%];
+        @apply flex-1;
     }
 
     .industry-card-title-text {
-        @apply text-base text-neutral/90 font-bold;
+        @apply text-base text-secondary font-semibold;
     }
 
     .industry-card-meta-row {
         @apply flex-row justify-between items-end;
-    }
-
-    .industry-card-pe {
-        @apply text-sm text-neutral/80;
     }
 
     .industry-card-percent {

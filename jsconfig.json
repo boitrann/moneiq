@@ -6,5 +6,6 @@
             "@/assets/*": ["./assets/*"]
         }
     },
-    "exclude": ["node_modules"]
+    "exclude": ["node_modules"],
+    "include": ["**/*.js", "**/*.jsx", "nativewind-env.d.ts"]
 }

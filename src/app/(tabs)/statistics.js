@@ -1,14 +1,16 @@
 import StatisticChart from "@/components/statistics/StatisticChart";
 import IconAnnotation from "@/components/ui/IconAnnotation";
 import LoadingOverlay from "@/components/ui/LoadingOverlay";
-import { colors } from "@/constants/colors";
 import { INDEX_SCORECARD } from "@/constants/data";
+import { themes } from "@/constants/themes";
 import SegmentedControl from "@react-native-segmented-control/segmented-control";
 import { useState } from "react";
-import { ScrollView, Text, View } from "react-native";
+import { Appearance, ScrollView, Text, View } from "react-native";
 import { s } from "react-native-size-matters";
 
 const statistics = () => {
+    const theme = Appearance.getColorScheme();
+
     const [chartKey1, setChartKey1] = useState(0);
     const [chartKey2, setChartKey2] = useState(0);
     const [period, setPeriod] = useState(90);
@@ -24,14 +26,14 @@ const statistics = () => {
 
     return (
         <ScrollView>
-            <View className="card gap-8">
+            <View className="flat-card gap-8">
                 {/* Xác suất ngắn hạn */}
                 <View className="gap-5">
                     {/* segments control */}
                     <View className="w-[50%]">
                         <SegmentedControl
-                            fontStyle={{ color: colors.dark.neutral500 }}
-                            tintColor={colors.dark.accent}
+                            fontStyle={{ color: themes[theme].primary }}
+                            tintColor={themes[theme].brand}
                             values={values1}
                             selectedIndex={Object.values(periods).indexOf(
                                 period,
@@ -85,10 +87,10 @@ const statistics = () => {
                                 data={data}
                                 key1="1w_ma20_vol"
                                 key2="1m_ma50_vol"
-                                color1={colors.dark.candleUp}
-                                color2={colors.dark.candleFloor}
+                                color1={themes[theme].candleUp}
+                                color2={themes[theme].candleDown}
                                 lineType2="dashed"
-                                labelColor={colors.dark.neutralBlur}
+                                labelColor={themes[theme].primary}
                                 yLabelThreshold1={60}
                                 yLabelThreshold2={80}
                                 height={s(130)}
@@ -107,8 +109,8 @@ const statistics = () => {
                     {/* segments control */}
                     <View className="w-full">
                         <SegmentedControl
-                            fontStyle={{ color: colors.dark.neutral500 }}
-                            tintColor={colors.dark.accent}
+                            fontStyle={{ color: themes[theme].primary }}
+                            tintColor={themes[theme].brand}
                             values={values2}
                             selectedIndex={ranges.indexOf(range)}
                             onChange={(e) => {
@@ -158,10 +160,10 @@ const statistics = () => {
                                 data={data}
                                 key1={`ma200_${range}`}
                                 key2={`ma20_${range}`}
-                                color1={colors.dark.candleUp}
-                                color2={colors.dark.candleFloor}
+                                color1={themes[theme].candleUp}
+                                color2={themes[theme].candleDown}
                                 lineType2="dashed"
-                                labelColor={colors.dark.neutralBlur}
+                                labelColor={themes[theme].primary}
                                 yLabelThreshold1={50}
                                 yLabelThreshold2={100}
                                 height={s(130)}

@@ -1,11 +1,11 @@
-import { colors } from "@/constants/colors";
+import { themes } from "@/constants/themes";
 import clsx from "clsx";
 import { memo, useMemo, useState } from "react";
 import { Pressable, Text, useWindowDimensions, View } from "react-native";
 import { LineChart } from "react-native-gifted-charts";
 import { s } from "react-native-size-matters";
 
-const IndustryCard = ({ industryData, onPress }) => {
+const IndustryCard = ({ theme, industryData, onPress }) => {
     const [chartHeight, setChartHeight] = useState();
     const { width: windowWidth } = useWindowDimensions();
 
@@ -41,17 +41,17 @@ const IndustryCard = ({ industryData, onPress }) => {
         }));
 
         const yAxisExtraHeight = s(0);
-        const xAxisLabelsHeight = s(10);
+        const xAxisLabelsHeight = s(0);
         const height = chartHeight - yAxisExtraHeight - xAxisLabelsHeight;
         const yAxisLabelWidth = s(0);
         const endSpacing = s(5);
-        const width = windowWidth / 2.2 - yAxisLabelWidth - endSpacing - s(10);
+        const width = windowWidth / 2.7 - yAxisLabelWidth - endSpacing;
         const color =
             calculatedData.percent > 0
-                ? colors.dark.candleUp
+                ? themes[theme].candleUp
                 : calculatedData.percent < 0
-                  ? colors.dark.candleDown
-                  : colors.dark.candleFlat;
+                  ? themes[theme].candleDown
+                  : themes[theme].candleFlat;
 
         return {
             data,
@@ -68,8 +68,8 @@ const IndustryCard = ({ industryData, onPress }) => {
     return (
         <Pressable
             onPress={onPress}
-            style={{ width: windowWidth / 2.2 }}
-            className="card h-32 p-2 gap-2 active:opacity-70"
+            style={{ width: windowWidth / 2.5 }}
+            className="flat-card p-2! h-32 active:opacity-70"
         >
             {/* Top */}
             <View className="industry-card-top">
@@ -83,11 +83,6 @@ const IndustryCard = ({ industryData, onPress }) => {
                     </Text>
                 </View>
                 <View className="industry-card-meta-row">
-                    <View>
-                        <Text className="industry-card-pe">
-                            PE: {calculatedData?.pe || 0}
-                        </Text>
-                    </View>
                     <View>
                         <Text
                             className={clsx(
@@ -115,6 +110,7 @@ const IndustryCard = ({ industryData, onPress }) => {
                     const { height } = e.nativeEvent.layout;
                     if (height !== chartHeight) setChartHeight(height);
                 }}
+                // style={{ transform: [{ translateY: s(2) }] }}
             >
                 {chartConfig && (
                     <LineChart
@@ -123,10 +119,10 @@ const IndustryCard = ({ industryData, onPress }) => {
                         hideDataPoints
                         areaChart
                         startFillColor={chartConfig.color}
-                        endFillColor="transparent"
+                        endFillColor={chartConfig.color}
                         startOpacity={0.3}
-                        endOpacity={0.2}
-                        thickness={s(1)}
+                        endOpacity={0}
+                        thickness={s(1.2)}
                         yAxisExtraHeight={chartConfig.yAxisExtraHeight}
                         xAxisLabelsHeight={chartConfig.xAxisLabelsHeight}
                         height={chartConfig.height}
@@ -139,8 +135,7 @@ const IndustryCard = ({ industryData, onPress }) => {
                         disableScroll
                         yAxisOffset={Math.floor(calculatedData.min)}
                         yAxisThickness={0}
-                        xAxisType="dashed"
-                        xAxisColor={colors.dark.neutralBlur}
+                        xAxisThickness={0}
                     />
                 )}
             </View>
