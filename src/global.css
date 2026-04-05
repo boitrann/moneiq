@@ -7,7 +7,8 @@
 @theme {
     /* background */
     --color-bg-base: #0f172a;
-    --color-icon: #E4212E;
+    --color-icon: #e4212e;
+    --color-neutral: #f8fafc;
 
     /* candles */
     --color-candle-up: #00c27f;
@@ -17,12 +18,10 @@
     --color-candle-flat: #ffd900;
 
     /* text */
-    --color-neutral-500: #f8fafc;
-    --color-neutral-400: #d8d8d8;
-    --color-neutral-300: #a3a3a3;
-    --color-neutral-200: #767676;
     --color-neutral-blur: #858585;
-    --color-accent: #6E6EC4;
+    --color-accent: #6e6ec4;
+    --color-accent-yellow: #392d1f;
+    --color-accent-orange: #f86a35;
 
     /* surfaces, card */
     --color-surface-500: #192536;
@@ -31,63 +30,82 @@
 }
 
 :root.light {
-    --color-picker: #00904a;
+    --color-picker: #5d5d86;
     /* --color-background: white; */
 }
 
 @layer components {
     /* ui */
     .button {
-        @apply bg-neutral-500 p-3 rounded-md active:opacity-70;
+        @apply bg-neutral p-3 rounded-md active:opacity-70;
     }
     .button-text {
-        @apply text-bg-base font-semibold;
+        @apply text-bg-base font-bold;
     }
 
     .card {
-        @apply bg-surface-100 rounded-xl shadow-lg;
+        @apply bg-neutral/5 rounded-xl shadow-lg p-5;
+    }
+
+    .annotation-icon {
+        @apply border border-neutral size-6 rounded-full justify-center items-center active:opacity-50;
+    }
+
+    .annotation-text {
+        @apply text-neutral text-sm;
     }
 
     /* statistic */
     .statistic-title-row {
-        @apply flex-row justify-between
+        @apply flex-row justify-between;
     }
 
     .statistic-title-group {
-        @apply flex-row items-center gap-2
+        @apply flex-row items-center gap-2;
     }
 
     .statistic-title {
-        @apply text-neutral-500 text-lg font-bold
-    }
-
-    .statistic-comment {
-        @apply border border-neutral-500 size-6 rounded-full active:opacity-50
-    }
-
-    .statistic-comment-text {
-        @apply text-neutral-500 text-sm text-center
+        @apply text-neutral text-lg font-bold;
     }
 
     .statistic-legend-groups {
-        @apply flex-row justify-between gap-5
+        @apply flex-row justify-between gap-5;
     }
 
     .statistic-legend-group {
-        @apply flex-row justify-between items-center gap-2
+        @apply flex-row justify-between items-center gap-2;
     }
 
     .statistic-legend-icon-1 {
-        @apply bg-candle-up size-3 rounded-full
+        @apply bg-candle-up size-3 rounded-full;
     }
     .statistic-legend-icon-2 {
-        @apply bg-candle-floor size-3 rounded-full
+        @apply bg-candle-floor size-3 rounded-full;
     }
 
     .statistic-legend-text {
-        @apply text-lg text-neutral-500
+        @apply text-lg text-neutral;
     }
 
+    .statistic-pointer-card {
+        @apply bg-neutral/10 gap-2 p-2 w-30 rounded-lg shadow-lg;
+    }
+
+    .statistic-pointer-date {
+        @apply text-neutral font-bold;
+    }
+
+    .statictic-pointer-row {
+        @apply flex-row items-center gap-2;
+    }
+
+    .statictic-pointer-icon {
+        /* @apply; */
+    }
+
+    .statistic-pointer-value {
+        @apply text-neutral font-bold;
+    }
 
     /* industry */
 
@@ -100,7 +118,7 @@
     }
 
     .industry-card-title-text {
-        @apply text-base text-neutral-400 font-bold;
+        @apply text-base text-neutral/90 font-bold;
     }
 
     .industry-card-meta-row {
@@ -108,7 +126,7 @@
     }
 
     .industry-card-pe {
-        @apply text-sm text-neutral-300;
+        @apply text-sm text-neutral/80;
     }
 
     .industry-card-percent {

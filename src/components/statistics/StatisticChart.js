@@ -19,8 +19,6 @@ const StatisticChart = ({
     width = "100%",
     textSize = s(9),
 }) => {
-    // if (!key1.includes("vol")) console.log(key1, "re-render");
-
     const [containerSize, setContainerSize] = useState({});
 
     const processedData = useMemo(() => {
@@ -29,6 +27,7 @@ const StatisticChart = ({
             const isLabelled = idx === 0 || idx === Math.round(length / 2);
             const isLastPoint = idx === length - 1;
             return {
+                tradingDate: msg.trading_date,
                 value: msg[key1],
                 ...(isLabelled || isLastPoint
                     ? {
@@ -38,7 +37,8 @@ const StatisticChart = ({
                                       height: textSize * 1.5,
                                       width: textSize * 3,
                                       justifyContent: "center",
-                                      marginLeft: isLastPoint && s(-20),
+                                      marginLeft:
+                                          isLastPoint && -textSize * 2.5,
                                   }}
                               >
                                   <Text
@@ -61,7 +61,7 @@ const StatisticChart = ({
             ...arr2.map((v) => v.value),
         );
 
-        return { arr1, arr2, max };
+        return { arr1, arr2, max, length };
     }, [data]);
 
     const chartConfig = useMemo(() => {
@@ -80,7 +80,7 @@ const StatisticChart = ({
         }
 
         const yAxisLabelWidth = textSize * 3.5;
-        const endSpacing = s(5);
+        const endSpacing = s(15);
         const initialSpacing = s(10);
         const width = containerSize.width - yAxisLabelWidth - endSpacing;
 
@@ -148,6 +148,74 @@ const StatisticChart = ({
                     rulesColor={labelColor}
                     xAxisColor={labelColor}
                     xAxisLabelsHeight={chartConfig.xAxisLabelsHeight}
+                    pointerConfig={{
+                        pointerStripColor: labelColor,
+                        pointerColor: color1,
+                        pointer2Color: color2,
+                        pointerLabelComponent: (items, _, idx) => {
+                            return (
+                                <View
+                                    className="statistic-pointer-card"
+                                    style={{
+                                        transform:
+                                            idx >= processedData.length / 2
+                                                ? [{ translateX: s(-90) }]
+                                                : [{ translateX: s(15) }],
+                                    }}
+                                >
+                                    {/* Date */}
+                                    <View>
+                                        <Text
+                                            className="statistic-pointer-date"
+                                            style={{ fontSize: textSize * 1.2 }}
+                                        >
+                                            {dayjs(items[0].tradingDate).format(
+                                                "DD/MM/YYYY",
+                                            )}
+                                        </Text>
+                                    </View>
+
+                                    {/* Items */}
+                                    <View>
+                                        {/* Item 1 */}
+                                        <View className="statictic-pointer-row">
+                                            <View className="h-1 w-5.5 bg-candle-up" />
+                                            <Text
+                                                className="statistic-pointer-value"
+                                                style={{
+                                                    fontSize: textSize * 1.2,
+                                                }}
+                                            >
+                                                {items[0].value}%
+                                            </Text>
+                                        </View>
+
+                                        {/* Item 2 */}
+                                        <View className="statictic-pointer-row">
+                                            <View className="flex-row gap-0.5">
+                                                {new Array(3)
+                                                    .fill(0)
+                                                    .map((_, idx) => (
+                                                        <View
+                                                            key={idx}
+                                                            className="h-1 w-1.5 bg-candle-floor"
+                                                        />
+                                                    ))}
+                                            </View>
+                                            <Text
+                                                className="statistic-pointer-value"
+                                                style={{
+                                                    fontSize: textSize * 1.2,
+                                                }}
+                                            >
+                                                {items[1].value}%
+                                            </Text>
+                                        </View>
+                                    </View>
+                                </View>
+                            );
+                        },
+                    }}
                 />
             )}
         </View>

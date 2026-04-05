@@ -1,10 +1,11 @@
 import StatisticChart from "@/components/statistics/StatisticChart";
+import IconAnnotation from "@/components/ui/IconAnnotation";
 import LoadingOverlay from "@/components/ui/LoadingOverlay";
 import { colors } from "@/constants/colors";
 import { INDEX_SCORECARD } from "@/constants/data";
 import SegmentedControl from "@react-native-segmented-control/segmented-control";
 import { useState } from "react";
-import { Pressable, Text, View } from "react-native";
+import { ScrollView, Text, View } from "react-native";
 import { s } from "react-native-size-matters";
 
 const statistics = () => {
@@ -22,8 +23,8 @@ const statistics = () => {
     const data = INDEX_SCORECARD[period];
 
     return (
-        <View>
-            <View className="card p-4 gap-10">
+        <ScrollView>
+            <View className="card gap-8">
                 {/* Xác suất ngắn hạn */}
                 <View className="gap-5">
                     {/* segments control */}
@@ -49,27 +50,30 @@ const statistics = () => {
                         <View className="statistic-title-row">
                             {/* title */}
                             <View className="statistic-title-group">
-                                <Text className="statistic-title">
-                                    Xác suất đầu tư ngắn hạn
-                                </Text>
-                                <Pressable className="statistic-comment">
-                                    <Text className="statistic-comment-text">
-                                        !
+                                <View>
+                                    <Text
+                                        numberOfLines={1}
+                                        ellipsizeMode="trail"
+                                        className="statistic-title"
+                                    >
+                                        Xác suất đầu tư
                                     </Text>
-                                </Pressable>
+                                </View>
+
+                                <IconAnnotation />
                             </View>
                             {/* legend */}
                             <View className="statistic-legend-groups">
                                 <View className="statistic-legend-group">
                                     <View className="statistic-legend-icon-1 " />
                                     <Text className="statistic-legend-text">
-                                        Cung
+                                        Cầu
                                     </Text>
                                 </View>
                                 <View className="statistic-legend-group">
                                     <View className="statistic-legend-icon-2" />
                                     <Text className="statistic-legend-text">
-                                        Cầu
+                                        Cung
                                     </Text>
                                 </View>
                             </View>
@@ -120,14 +124,16 @@ const statistics = () => {
                         <View className="statistic-title-row">
                             {/* title */}
                             <View className="statistic-title-group">
-                                <Text className="statistic-title">
-                                    Đà lan tỏa
-                                </Text>
-                                <Pressable className="statistic-comment">
-                                    <Text className="statistic-comment-text">
-                                        !
+                                <View>
+                                    <Text
+                                        numberOfLines={1}
+                                        ellipsizeMode="trail"
+                                        className="statistic-title"
+                                    >
+                                        Đà lan tỏa
                                     </Text>
-                                </Pressable>
+                                </View>
+                                <IconAnnotation />
                             </View>
                             {/* legend */}
                             <View className="statistic-legend-groups">
@@ -169,7 +175,7 @@ const statistics = () => {
                     </View>
                 </View>
             </View>
-        </View>
+        </ScrollView>
     );
 };
 

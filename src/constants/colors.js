@@ -15,6 +15,8 @@ export const colors = {
         neutral200: "#767676",
         neutralBlur: "#858585",
         accent: "#6E6EC4",
+        accentOrange: "#f86a35",
+        accentYellow: "#392D1F",
 
         surface100: "#172237",
     },
