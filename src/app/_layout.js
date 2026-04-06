@@ -3,9 +3,8 @@ import "@/global.css";
 import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { styled } from "nativewind";
-import { SafeAreaView as RNSafeAreaView } from "react-native-safe-area-context";
-
 import { Appearance } from "react-native";
+import { SafeAreaView as RNSafeAreaView } from "react-native-safe-area-context";
 
 const SafeAreaView = styled(RNSafeAreaView);
 

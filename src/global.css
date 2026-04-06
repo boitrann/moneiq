@@ -47,8 +47,13 @@
     .annotation-text {
         @apply text-primary text-sm;
     }
+    
+    .page-title {
+        @apply text-primary text-3xl font-extrabold;
+    }
 
     /* statistic */
+
     .statistic-title-row {
         @apply flex-row justify-between;
     }
@@ -117,4 +122,10 @@
     .industry-card-percent {
         @apply text-sm;
     }
+
+    /* institution */
+    .institution-title {
+        @apply text-primary text-lg font-bold;
+    }
+
 }

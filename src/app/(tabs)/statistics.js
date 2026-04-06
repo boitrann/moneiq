@@ -1,11 +1,12 @@
 import StatisticChart from "@/components/statistics/StatisticChart";
 import IconAnnotation from "@/components/ui/IconAnnotation";
 import LoadingOverlay from "@/components/ui/LoadingOverlay";
+import PageTitle from "@/components/ui/PageTitle";
 import { INDEX_SCORECARD } from "@/constants/data";
 import { themes } from "@/constants/themes";
 import SegmentedControl from "@react-native-segmented-control/segmented-control";
 import { useState } from "react";
-import { Appearance, ScrollView, Text, View } from "react-native";
+import { Appearance, Text, View } from "react-native";
 import { s } from "react-native-size-matters";
 
 const statistics = () => {
@@ -25,8 +26,9 @@ const statistics = () => {
     const data = INDEX_SCORECARD[period];
 
     return (
-        <ScrollView>
-            <View className="flat-card gap-8">
+        <View className="h-full">
+            <PageTitle title="Chỉ báo tâm lý" />
+            <View className="flat-card flex-1 gap-8">
                 {/* Xác suất ngắn hạn */}
                 <View className="gap-5">
                     {/* segments control */}
@@ -93,7 +95,7 @@ const statistics = () => {
                                 labelColor={themes[theme].primary}
                                 yLabelThreshold1={60}
                                 yLabelThreshold2={80}
-                                height={s(130)}
+                                height={s(140)}
                             />
                         ) : (
                             <LoadingOverlay
@@ -166,7 +168,7 @@ const statistics = () => {
                                 labelColor={themes[theme].primary}
                                 yLabelThreshold1={50}
                                 yLabelThreshold2={100}
-                                height={s(130)}
+                                height={s(140)}
                             />
                         ) : (
                             <LoadingOverlay
@@ -177,7 +179,7 @@ const statistics = () => {
                     </View>
                 </View>
             </View>
-        </ScrollView>
+        </View>
     );
 };
 

@@ -35,21 +35,6 @@ const industries = () => {
 
     return (
         <View>
-            {/* <FlatList
-                initialNumToRender={2}
-                horizontal
-                data={data}
-                keyExtractor={(item) => item[0]}
-                renderItem={({ item }) => (
-                    <IndustryCard
-                        theme={theme}
-                        onPress={onPressCard}
-                        industryData={item[1]}
-                    />
-                )}
-                showsHorizontalScrollIndicator={false}
-                ItemSeparatorComponent={() => <View className="w-2" />}
-            /> */}
             <FlatList
                 horizontal
                 data={groupingData(data, 2)}
