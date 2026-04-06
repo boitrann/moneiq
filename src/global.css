@@ -127,4 +127,8 @@
     .institution-title {
         @apply text-primary text-lg font-bold;
     }
+
+    .institution-value {
+        @apply text-3xl font-bold;
+    }
 }

@@ -1,20 +1,31 @@
 import { themes } from "@/constants/themes";
+import { roundedValue } from "@/lib/utils";
 import { useMemo } from "react";
 import { BarChart } from "react-native-gifted-charts";
 import { s } from "react-native-size-matters";
 
-const NetIndexChart = ({ data, containerSize, theme }) => {
+const calculateMaxSpacing = (length, barWidth, maxPlotWidth) => {
+    if (length <= 1) return 0;
+    return (maxPlotWidth - length * barWidth) / (length - 1);
+};
+
+const NetIndexChart = ({
+    data,
+    valueKey,
+    containerSize,
+    theme,
+    textSize = s(11),
+}) => {
     const processed = useMemo(() => {
         const arr = data.message.map((m) => ({
-            value: m.netForeignValue,
+            value: m[valueKey],
             updatedAt: m.updatedAt,
             frontColor:
-                m.netForeignValue >= 0
+                m[valueKey] >= 0
                     ? themes[theme].candleUp
                     : themes[theme].candleDown,
         }));
-        // const chartData = arr;
-        const chartData = arr.filter((v) => v.value >= 0);
+        const chartData = arr.slice(-15);
         const max = Math.max(...chartData.map((v) => v.value));
         const min = Math.min(...chartData.map((v) => v.value));
         const length = chartData.length;
@@ -22,73 +33,80 @@ const NetIndexChart = ({ data, containerSize, theme }) => {
         return { chartData, max, min, length };
     }, [data]);
 
-    const calculateMaxSpacing = (length, barWidth, maxPlotWidth) => {
-        if (length <= 1) return 0;
-        return (maxPlotWidth - length * barWidth) / (length - 1);
-    };
-
     const chartConfig = useMemo(() => {
-        // maxValue
-        // mostNegativeValue
-        // stepValue
-        // stepHeight
-        // height
-        // noOfSections
-        // noOfSectionsBelowXAxis
-        const max = Math.max(processed.max, 0);
-        const min = Math.min(processed.min, 0);
+        // Height
+        const max = Math.ceil(Math.max(processed.max, 0));
+        const min = Math.floor(Math.min(processed.min, 0));
+        const maxAbs = Math.abs(max, min);
         const length = processed.length;
 
         const xAxisLabelsHeight = s(0);
-        const yAxisExtraHeight = s(5);
+        const extraHeight = s(10);
+        const yAxisExtraHeight = extraHeight;
 
-        const totalOfSections = 4;
-        let height =
+        let initialHeight =
             containerSize.height - yAxisExtraHeight - xAxisLabelsHeight;
-        const stepHeight = height / totalOfSections;
 
+        let baseSections = 4;
         let noOfSections = 4;
         // Negative chart
-        if (min < 0 || max > 0) {
+        let height, stepValue, stepHeight, noOfSectionsBelowXAxis;
+        if (min < 0) {
             const range = max - min;
-            noOfSections = Math.floor((max * totalOfSections) / range);
-            height = noOfSections * stepHeight;
+            stepValue = range / baseSections;
+            noOfSections = Math.ceil(max / stepValue);
+            noOfSectionsBelowXAxis = Math.ceil(-min / stepValue);
+            const totalOfSections = noOfSections + noOfSectionsBelowXAxis;
+
+            stepHeight = (initialHeight - extraHeight) / totalOfSections;
+            height = stepHeight * noOfSections;
         }
 
-        const yAxisLabelWidth = s(35);
-
+        // Width
+        const yAxisLabelWidth = maxAbs / 1e9 < 9000 ? s(45) : s(50);
         const barWidth = length >= 10 ? s(10) : length >= 5 ? s(20) : s(25);
-
         const initialSpacing =
             length >= 10 ? s(2) : length >= 5 ? s(10) : s(50);
-        const endSpacing = length >= 10 ? s(1) : length >= 5 ? s(10) : s(50);
+        const endSpacing = initialSpacing;
 
         const width = containerSize.width - yAxisLabelWidth - endSpacing;
         const maxPlotWidth = width - initialSpacing;
-
-        let spacing = calculateMaxSpacing(length, barWidth, maxPlotWidth);
+        const spacing = calculateMaxSpacing(length, barWidth, maxPlotWidth);
+        const formatYLabel = (label) => {
+            return label !== "0" ? roundedValue(label / 1e9) : label;
+        };
 
         return {
+            spacing,
             noOfSections,
+            noOfSectionsBelowXAxis,
             xAxisLabelsHeight,
             yAxisExtraHeight,
             height,
             stepHeight,
-            noOfSections,
-            barWidth,
+            stepValue,
             yAxisLabelWidth,
             initialSpacing,
-            spacing,
             endSpacing,
             width,
+            maxValue: stepValue * noOfSections,
+            mostNegativeValue: -stepValue * noOfSectionsBelowXAxis,
+            formatYLabel,
+            yAxisThickness: 0,
         };
     }, [containerSize, processed]);
 
     return (
         <BarChart
+            curved
             isAnimated
             adjustToWidth
             disableScroll
+            hideDataPoints
+            yAxisTextStyle={{
+                fontSize: textSize,
+                color: themes[theme].primary,
+            }}
             data={processed.chartData}
             {...chartConfig}
         />

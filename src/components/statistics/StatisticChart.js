@@ -127,10 +127,10 @@ const StatisticChart = ({
                     endFillColor={color1}
                     startOpacity="0.3"
                     endOpacity="0"
-                    thickness={s(1.5)}
+                    thickness={s(2)}
                     data2={processedData.arr2}
                     color2={color2}
-                    thickness2={s(1.5)}
+                    thickness2={s(2)}
                     strokeDashArray1={lineType1 == "dashed" ? [4, 3] : null}
                     strokeDashArray2={lineType2 == "dashed" ? [4, 3] : null}
                     noOfSections={chartConfig.noOfSections}

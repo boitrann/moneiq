@@ -1,9 +1,11 @@
 import NetIndexChart from "@/components/institutions/NetIndexChart";
 import LoadingOverlay from "@/components/ui/LoadingOverlay";
 import PageTitle from "@/components/ui/PageTitle";
-import { FOREIGN_HISTORY } from "@/constants/data";
+import { FOREIGN_HISTORY, PROPRIETARY_HISTORY } from "@/constants/data";
 import { themes } from "@/constants/themes";
+import { formatNumber } from "@/lib/utils";
 import SegmentedControl from "@react-native-segmented-control/segmented-control";
+import clsx from "clsx";
 import { useState } from "react";
 import { Appearance, Text, View } from "react-native";
 
@@ -18,11 +20,19 @@ const institutions = () => {
     const segments = ["Nước ngoài", "Tự doanh"];
     const periods = ["1W", "1M", "1Y"];
 
-    const data = FOREIGN_HISTORY[period];
+    let data, valueKey;
+    if (segment === "Nước ngoài") {
+        data = FOREIGN_HISTORY[period];
+        valueKey = "netForeignValue";
+    } else {
+        data = PROPRIETARY_HISTORY[period];
+        valueKey = "netProprietaryValue";
+    }
 
+    const total = data.message.reduce((t, e) => t + e[valueKey], 0);
     return (
         <View className="h-full">
-            <PageTitle title="Giao dịch tổ chức" />
+            <PageTitle title="Giao dịch ròng tổ chức" />
 
             <SegmentedControl
                 fontStyle={{
@@ -31,12 +41,15 @@ const institutions = () => {
                 tintColor={themes[theme].brand}
                 selectedIndex={segments.indexOf(segment)}
                 values={segments}
-                onValueChange={(s) => setSegment(s)}
+                onValueChange={(s) => {
+                    setChartKey((prev) => prev + 1);
+                    setSegment(s);
+                }}
             />
 
             <View className="flat-card flex-1 my-5">
                 {/* sub-segment control */}
-                <View className="w-[50%] self-end mb-5">
+                <View className="w-[50%] self-end">
                     <SegmentedControl
                         values={periods}
                         selectedIndex={periods.indexOf(period)}
@@ -54,17 +67,29 @@ const institutions = () => {
                 {/* Charts */}
                 <View className="flex-1 gap-5">
                     {/* BarChart */}
-                    <View className="border flex-1">
+                    <View className="flex-1">
                         {/* Title & Legend */}
-                        <View className="h-[15%] flex-row justify-between items-start">
+                        <View className="mb-2 gap-1">
                             <Text className="institution-title">
-                                Giá trị giao dịch ròng
+                                Theo chỉ số
                             </Text>
-                            <Text>Legend</Text>
+                            <View>
+                                <Text
+                                    className={clsx(
+                                        "institution-value",
+                                        total > 0
+                                            ? "text-candle-up"
+                                            : "text-candle-down",
+                                    )}
+                                >
+                                    {formatNumber(total / 1e9)} B
+                                </Text>
+                            </View>
                         </View>
+
                         {/* Bar chart */}
                         <View
-                            className="flex-1"
+                            className="flex-1 overflow-hidden"
                             onLayout={(e) => {
                                 const { width, height } = e.nativeEvent.layout;
                                 setChartSize({ width, height });
@@ -73,6 +98,7 @@ const institutions = () => {
                             {chartSize.width ? (
                                 <NetIndexChart
                                     key={chartKey}
+                                    valueKey={valueKey}
                                     data={data}
                                     containerSize={chartSize}
                                     theme={theme}
@@ -83,8 +109,10 @@ const institutions = () => {
                         </View>
                     </View>
 
-                    {/* RevergentChart */}
-                    <View className="border flex-1"></View>
+                    {/* DivergentChart */}
+                    <View className="border flex-1">
+                        <Text className="institution-title">Theo cổ phiếu</Text>
+                    </View>
                 </View>
             </View>
         </View>
