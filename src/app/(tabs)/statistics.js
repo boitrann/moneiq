@@ -28,7 +28,7 @@ const statistics = () => {
     return (
         <View className="h-full">
             <PageTitle title="Chỉ báo tâm lý" />
-            <View className="flat-card flex-1 gap-8">
+            <View className="flat-card flex-1 gap-8 mb-5">
                 {/* Xác suất ngắn hạn */}
                 <View className="gap-5">
                     {/* segments control */}

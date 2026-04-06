@@ -34,7 +34,7 @@
     }
 
     .flat-card {
-        @apply bg-brand border border-blur rounded-xl  p-5;
+        @apply bg-brand border border-blur rounded-xl p-5;
     }
     .card {
         @apply bg-blur rounded-xl shadow-sm p-5;
@@ -47,7 +47,7 @@
     .annotation-text {
         @apply text-primary text-sm;
     }
-    
+
     .page-title {
         @apply text-primary text-3xl font-extrabold;
     }
@@ -127,5 +127,4 @@
     .institution-title {
         @apply text-primary text-lg font-bold;
     }
-
 }
