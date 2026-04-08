@@ -1,6 +1,9 @@
 import { themes } from "@/constants/themes";
-import { roundedValue } from "@/lib/utils";
-import { useMemo } from "react";
+import { formatNumber, roundedValue } from "@/lib/utils";
+import clsx from "clsx";
+import dayjs from "dayjs";
+import { memo, useMemo } from "react";
+import { Text, View } from "react-native";
 import { BarChart } from "react-native-gifted-charts";
 import { s } from "react-native-size-matters";
 
@@ -51,30 +54,39 @@ const NetIndexChart = ({
         let noOfSections = 4;
         // Negative chart
         let height, stepValue, stepHeight, noOfSectionsBelowXAxis;
-        if (min < 0) {
-            const range = max - min;
-            stepValue = range / baseSections;
-            noOfSections = Math.ceil(max / stepValue);
-            noOfSectionsBelowXAxis = Math.ceil(-min / stepValue);
-            const totalOfSections = noOfSections + noOfSectionsBelowXAxis;
+        const range = max - min;
+        stepValue = range / baseSections;
+        noOfSections = Math.ceil(max / stepValue) || 1;
+        noOfSectionsBelowXAxis = Math.ceil(-min / stepValue) || 1;
+        const totalOfSections = noOfSections + noOfSectionsBelowXAxis;
 
-            stepHeight = (initialHeight - extraHeight) / totalOfSections;
-            height = stepHeight * noOfSections;
-        }
+        stepHeight = (initialHeight - extraHeight) / totalOfSections;
+        height = stepHeight * noOfSections;
 
         // Width
         const yAxisLabelWidth = maxAbs / 1e9 < 9000 ? s(45) : s(50);
-        const barWidth = length >= 10 ? s(10) : length >= 5 ? s(20) : s(25);
+        const barWidth = length >= 10 ? s(10) : length >= 5 ? s(20) : s(50);
         const initialSpacing =
-            length >= 10 ? s(2) : length >= 5 ? s(10) : s(50);
+            length >= 10 ? s(8) : length >= 5 ? s(25) : s(35);
         const endSpacing = initialSpacing;
 
         const width = containerSize.width - yAxisLabelWidth - endSpacing;
         const maxPlotWidth = width - initialSpacing;
         const spacing = calculateMaxSpacing(length, barWidth, maxPlotWidth);
+
+        // Styling
         const formatYLabel = (label) => {
             return label !== "0" ? roundedValue(label / 1e9) : label;
         };
+        const barBorderTopLeftRadius = s(3);
+        const barBorderTopRightRadius = s(3);
+
+        const yAxisTextStyle = {
+            fontSize: textSize,
+            color: themes[theme].primary,
+        };
+
+        const minHeight = s(2);
 
         return {
             spacing,
@@ -86,13 +98,18 @@ const NetIndexChart = ({
             stepHeight,
             stepValue,
             yAxisLabelWidth,
+            barWidth,
+            minHeight,
             initialSpacing,
             endSpacing,
             width,
             maxValue: stepValue * noOfSections,
             mostNegativeValue: -stepValue * noOfSectionsBelowXAxis,
-            formatYLabel,
             yAxisThickness: 0,
+            formatYLabel,
+            yAxisTextStyle,
+            barBorderTopLeftRadius,
+            barBorderTopRightRadius,
         };
     }, [containerSize, processed]);
 
@@ -103,14 +120,52 @@ const NetIndexChart = ({
             adjustToWidth
             disableScroll
             hideDataPoints
-            yAxisTextStyle={{
-                fontSize: textSize,
-                color: themes[theme].primary,
-            }}
             data={processed.chartData}
             {...chartConfig}
+            pointerConfig={{
+                pointerColor: themes[theme].primary,
+                hidePointer1: true,
+                pointerStripColor: themes[theme].primary,
+                pointerLabelComponent: (items, _, idx) => {
+                    return (
+                        <View
+                            className={clsx(
+                                "institution-pointer-card",
+                                idx >= processed.length / 2 ? "-ml-40!" : "",
+                                chartConfig.noOfSections === 1
+                                    ? "mt-45!"
+                                    : chartConfig.noOfSections === 2
+                                      ? "mt-30!"
+                                      : "",
+                            )}
+                        >
+                            {/* Date */}
+                            <View>
+                                <Text className="institution-pointer-date">
+                                    {dayjs(items[0].updatedAt).format(
+                                        "DD/MM/YYYY",
+                                    )}
+                                </Text>
+                            </View>
+                            {/* Value */}
+                            <View>
+                                <Text
+                                    className={clsx(
+                                        "institution-pointer-value",
+                                        items[0].value > 0
+                                            ? "text-candle-up!"
+                                            : "text-candle-down!",
+                                    )}
+                                >
+                                    {formatNumber(items[0].value / 1e9)} B
+                                </Text>
+                            </View>
+                        </View>
+                    );
+                },
+            }}
         />
     );
 };
 
-export default NetIndexChart;
+export default memo(NetIndexChart);
