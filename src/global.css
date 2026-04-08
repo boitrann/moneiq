@@ -86,7 +86,7 @@
     }
 
     .statistic-pointer-card {
-        @apply mt-3 bg-brand gap-2 p-2 w-30 rounded-lg shadow-lg;
+        @apply mt-3 bg-brand gap-2 p-2 w-35 rounded-lg shadow-xl;
     }
 
     .statistic-pointer-date {
@@ -133,7 +133,7 @@
     }
 
     .institution-pointer-card {
-        @apply bg-brand gap-2 mt-20 ml-6 p-4 w-40 rounded-lg shadow-lg;
+        @apply bg-brand gap-2 mt-20 ml-6 p-4 w-40 rounded-lg shadow-xl;
     }
 
     .institution-pointer-date {
@@ -145,20 +145,35 @@
     }
 
     .institution-top-ticker-legend-container {
-        @apply mb-1 flex-row justify-between;
+        @apply mb-1 flex-row justify-between items-center;
     }
 
     .institution-top-ticker-legend-group {
-        @apply flex-row items-center gap-3;
+        @apply flex-row items-center gap-1.5;
     }
     .institution-top-ticker-legend-icon {
-        @apply size-3 rounded-full
+        @apply size-3 rounded-full;
     }
     .institution-top-ticker-legend {
-        @apply font-bold text-sm
+        @apply font-bold text-sm;
     }
 
     .institution-top-ticker-row {
-        @apply flex-row items-center
+        @apply flex-row items-center;
+    }
+
+    .institution-top-ticker-label-container {
+        @apply flex-1 h-full items-center justify-center;
+    }
+    .institution-top-ticker-label {
+        @apply text-center font-semibold;
+    }
+
+    .institution-bar {
+        @apply flex-4 justify-center;
+    }
+
+    .institution-bars-container {
+        @apply flex-1 justify-between;
     }
 }

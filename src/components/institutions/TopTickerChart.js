@@ -1,6 +1,7 @@
 import { themes } from "@/constants/themes";
+import { formatNumber } from "@/lib/utils";
 import { memo, useMemo, useState } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { Text, View } from "react-native";
 import { s } from "react-native-size-matters";
 import LoadingOverlay from "../ui/LoadingOverlay";
 
@@ -10,13 +11,9 @@ const TopTickerChart = ({
     data,
     leftKey,
     rightKey,
-    barHeight = s(16),
-    labelSize = s(10),
-    valueSize = s(10),
-    leftLabelColor,
+    barHeight = s(20),
     leftBarColor,
     leftValueColor,
-    rightLabelColor,
     rightBarColor,
     rightValueColor,
     prefix,
@@ -29,74 +26,66 @@ const TopTickerChart = ({
 
     const [chartSize, setChartSize] = useState({});
 
-    const [chartWidth, setChartWidth] = useState(0);
-    const labelWidth = s(35);
-    const maxBarWidth = chartWidth - labelWidth;
-
     const chartConfig = useMemo(() => {
-        const labelHeight = containerSize.height / 8;
-        const chartHeight = containerSize.height - labelHeight;
+        if (!chartSize.height || !chartSize.width) return;
+
+        const maxBarWidth = chartSize.width;
+        const totalBarsHeight = chartSize.height;
 
         const numBars = Math.max(
             processedData.left.length,
             processedData.right.length,
         );
-        const maxBarHeight = chartHeight / numBars;
-        const actualBarHeight = Math.min(barHeight, maxBarHeight);
 
-        const gap = Math.min(
+        let actualBarHeight = barHeight;
+        let gap =
             numBars > 1
-                ? (chartHeight - actualBarHeight * numBars) / (numBars - 1)
-                : 0,
-            s(5),
-        );
+                ? (totalBarsHeight - actualBarHeight * numBars) / (numBars - 1)
+                : s(0);
+
+        if (gap <= 0) {
+            gap = s(1);
+            actualBarHeight = (totalBarsHeight - gap * (numBars - 1)) / numBars;
+        }
 
         return {
-            labelHeight,
-            chartHeight,
             numBars,
-            maxBarHeight,
+            maxBarWidth,
             actualBarHeight,
             gap,
         };
     }, [containerSize, data, barHeight]);
 
-    const rightData = useMemo(() => {
-        if (!processedData.right.length) return [];
+    const leftData = useMemo(() => {
+        if (!chartConfig) return;
+        const max = Math.min(
+            ...processedData.left.map((item) => item.value),
+            0,
+        );
 
+        return processedData.left.map((item) => {
+            return {
+                ...item,
+                width: (item.value * chartConfig.maxBarWidth) / max,
+            };
+        });
+    }, [processedData.left, chartConfig.maxBarWidth]);
+
+    const rightData = useMemo(() => {
+        if (!chartConfig) return;
         const max = Math.max(
             ...processedData.right.map((item) => item.value),
             0,
         );
         return processedData.right.map((item) => ({
             ...item,
-            width: (item.value * maxBarWidth) / max,
+            width: (item.value * chartConfig.maxBarWidth) / max,
         }));
-    }, [processedData.right, maxBarWidth]);
-
-    const leftData = useMemo(() => {
-        if (!processedData.left.length) return [];
-        const max = Math.max(
-            ...processedData.left.map((item) => item.value),
-            0,
-        );
-        return processedData.left.map((item) => ({
-            ...item,
-            width: (item.value * maxBarWidth) / max,
-        }));
-    }, [processedData.left, maxBarWidth]);
-
-    const formatter = useMemo(
-        () =>
-            new Intl.NumberFormat("en-US", {
-                maximumFractionDigits: 1,
-            }),
-        [],
-    );
+    }, [processedData.right, chartConfig.maxBarWidth]);
 
     return (
         <View className="flex-1">
-            {/* LABELS */}
+            {/* LEGEND */}
             <View className="institution-top-ticker-legend-container">
                 <View className="institution-top-ticker-legend-group ">
                     <View
@@ -119,180 +108,153 @@ const TopTickerChart = ({
             </View>
 
             {/* CHART */}
-            {chartSize ? (
+            <View className="flex-row flex-1">
+                {/* left side */}
                 <View
-                    className="flex-row"
-                    onLayout={(e) => setChartSize(e.nativeEvent.layout)}
+                    className="flex-1"
+                    onLayout={(e) => {
+                        setChartSize(e.nativeEvent.layout);
+                    }}
                 >
-                    {/* left side */}
-                    <View
-                        className="flex-1"
-                        onLayout={(e) => {
-                            const w = e.nativeEvent.layout.width;
-                            if (w !== chartWidth) setChartWidth(w);
-                        }}
-                    >
-                        {leftData.map((item) => {
-                            return (
-                                <View
-                                    key={item.symbol}
-                                    className="institution-top-ticker-row"
-                                    style={{ transform: [{ scaleX: -1 }] }}
-                                >
+                    {chartConfig ? (
+                        <View className="institution-bars-container">
+                            {leftData.map((item) => {
+                                return (
                                     <View
+                                        key={item.symbol}
+                                        className="institution-top-ticker-row"
                                         style={{
-                                            width: labelWidth,
                                             transform: [{ scaleX: -1 }],
+                                            height: chartConfig.actualBarHeight,
                                         }}
                                     >
-                                        <Text
-                                            style={[
-                                                styles.itemLabel,
-                                                {
-                                                    fontSize: labelSize,
-                                                },
-                                                !!leftLabelColor && {
-                                                    color: leftLabelColor,
-                                                },
-                                            ]}
-                                        >
-                                            {item.symbol.slice(0, 3)}
-                                        </Text>
-                                    </View>
-                                    <View style={styles.barContainer}>
                                         <View
-                                            style={[
-                                                styles.itemBar,
-                                                {
-                                                    height: chartConfig.actualBarHeight,
-                                                    width: item.width,
-                                                    backgroundColor:
-                                                        leftBarColor,
-                                                },
-                                            ]}
-                                        ></View>
-                                        <View
+                                            className="institution-top-ticker-label-container"
                                             style={{
-                                                position: "absolute",
-                                                left: s(5),
-                                                transform: [
-                                                    {
-                                                        scaleX: -1,
-                                                    },
-                                                ],
+                                                transform: [{ scaleX: -1 }],
+                                                width: chartConfig.actualBarHeight,
                                             }}
                                         >
                                             <Text
-                                                style={[
-                                                    styles.textValue,
-                                                    { fontSize: valueSize },
-                                                    !!leftValueColor && {
-                                                        color: leftValueColor,
-                                                    },
-                                                ]}
+                                                className="institution-top-ticker-label"
+                                                style={{
+                                                    fontSize:
+                                                        chartConfig.actualBarHeight /
+                                                        2,
+                                                }}
                                             >
-                                                {formatter.format(item.value)}
-                                                {prefix}
+                                                {item.symbol.slice(0, 3)}
                                             </Text>
                                         </View>
-                                    </View>
-                                </View>
-                            );
-                        })}
-                    </View>
 
-                    {/* right side */}
-                    <View
-                        style={[
-                            styles.chartContainer,
-                            { gap: chartConfig.gap, borderLeftWidth: s(0.2) },
-                        ]}
-                    >
-                        {rightData.map((item) => (
-                            <View key={item.symbol} style={styles.chartItem}>
-                                <View style={{ width: labelWidth }}>
-                                    <Text
-                                        style={[
-                                            styles.itemLabel,
-                                            { fontSize: labelSize },
-                                            !!rightLabelColor && {
-                                                color: rightLabelColor,
-                                            },
-                                        ]}
-                                    >
-                                        {item.symbol.slice(0, 3)}
-                                    </Text>
-                                </View>
-                                <View style={styles.barContainer}>
+                                        <View className="institution-bar">
+                                            <View
+                                                className="flex-1 opacity-30"
+                                                style={{
+                                                    width: item.width,
+                                                    backgroundColor:
+                                                        leftBarColor,
+                                                }}
+                                            ></View>
+                                            <View
+                                                className="absolute left-2"
+                                                style={{
+                                                    transform: [{ scaleX: -1 }],
+                                                }}
+                                            >
+                                                <Text
+                                                    className="text-sm"
+                                                    style={[
+                                                        !!leftValueColor && {
+                                                            color: leftValueColor,
+                                                        },
+                                                    ]}
+                                                >
+                                                    {formatNumber(
+                                                        item.value / 1e9,
+                                                        1,
+                                                    )}
+                                                    {prefix}
+                                                </Text>
+                                            </View>
+                                        </View>
+                                    </View>
+                                );
+                            })}
+                        </View>
+                    ) : (
+                        <LoadingOverlay />
+                    )}
+                </View>
+
+                {/* right side */}
+                <View className="flex-1">
+                    {chartConfig ? (
+                        <View className="institution-bars-container">
+                            {rightData.map((item) => {
+                                return (
                                     <View
-                                        style={[
-                                            styles.itemBar,
-                                            {
-                                                height: chartConfig.actualBarHeight,
-                                                width: item.width,
-                                                backgroundColor: rightBarColor,
-                                            },
-                                        ]}
-                                    ></View>
-                                    <View
+                                        key={item.symbol}
+                                        className="institution-top-ticker-row"
                                         style={{
-                                            position: "absolute",
-                                            left: s(5),
+                                            height: chartConfig.actualBarHeight,
                                         }}
                                     >
-                                        <Text
-                                            style={[
-                                                styles.textValue,
-                                                { fontSize: valueSize },
-                                                !!rightBarColor && {
-                                                    color: rightValueColor,
-                                                },
-                                            ]}
+                                        <View
+                                            className="institution-top-ticker-label-container"
+                                            style={{
+                                                width: chartConfig.actualBarHeight,
+                                            }}
                                         >
-                                            {formatter.format(item.value)}
-                                            {prefix}
-                                        </Text>
+                                            <Text
+                                                className="institution-top-ticker-label"
+                                                style={{
+                                                    fontSize:
+                                                        chartConfig.actualBarHeight /
+                                                        2,
+                                                }}
+                                            >
+                                                {item.symbol.slice(0, 3)}
+                                            </Text>
+                                        </View>
+
+                                        <View className="institution-bar">
+                                            <View
+                                                className="flex-1 opacity-30"
+                                                style={{
+                                                    width: item.width,
+                                                    backgroundColor:
+                                                        rightBarColor,
+                                                }}
+                                            ></View>
+                                            <View className="absolute left-2">
+                                                <Text
+                                                    className="text-sm"
+                                                    style={[
+                                                        !!rightValueColor && {
+                                                            color: rightValueColor,
+                                                        },
+                                                    ]}
+                                                >
+                                                    {formatNumber(
+                                                        item.value / 1e9,
+                                                        1,
+                                                    )}
+                                                    {prefix}
+                                                </Text>
+                                            </View>
+                                        </View>
                                     </View>
-                                </View>
-                            </View>
-                        ))}
-                    </View>
+                                );
+                            })}
+                        </View>
+                    ) : (
+                        <LoadingOverlay />
+                    )}
                 </View>
-            ) : (
-                <LoadingOverlay />
-            )}
+            </View>
         </View>
     );
 };
 
 export default memo(TopTickerChart);
-
-const styles = StyleSheet.create({
-    chartContainer: {
-        flex: 1,
-    },
-    chartItem: {
-        flexDirection: "row",
-        alignItems: "center",
-    },
-    labelContainer: {
-        width: s(35),
-    },
-    barContainer: {
-        flex: 1,
-        justifyContent: "center",
-    },
-    itemLabel: {
-        textAlign: "center",
-    },
-    itemBar: {
-        opacity: 0.3,
-    },
-    textValue: {
-        fontSize: s(12),
-    },
-    titleText: {
-        fontSize: s(10),
-        fontWeight: "bold",
-    },
-});

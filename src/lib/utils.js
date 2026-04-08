@@ -1,8 +1,8 @@
-export const formatNumber = (value) => {
+export const formatNumber = (value, digits = 2) => {
     try {
         return new Intl.NumberFormat("en-US", {
             minimumFractionDigits: 0,
-            maximumFractionDigits: 2,
+            maximumFractionDigits: digits,
         }).format(value);
     } catch {
         return value.toFixed(2);

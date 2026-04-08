@@ -38,7 +38,7 @@ const institutions = () => {
         data2 = TOP_FOREIGN_TRADE[period2];
     } else {
         data = PROPRIETARY_HISTORY[period1];
-        data2 = PROPRIETARY_HISTORY[period2];
+        data2 = TOP_FOREIGN_TRADE[period2];
         valueKey = "netProprietaryValue";
     }
 
@@ -47,7 +47,7 @@ const institutions = () => {
 
     const total1 = data.message?.reduce((t, e) => t + e[valueKey], 0);
     return (
-        <View className="h-full">
+        <View className="h-full gap-2">
             <PageTitle title="Giao dịch ròng tổ chức" />
 
             <SegmentedControl
@@ -64,119 +64,102 @@ const institutions = () => {
                 }}
             />
 
-            <View className="flat-card flex-1 my-5">
-                {/* sub-segment control */}
-                <View className="w-[50%] self-end">
-                    <SegmentedControl
-                        values={periods1}
-                        selectedIndex={periods1.indexOf(period1)}
-                        fontStyle={{
-                            color: themes[theme].primary,
-                        }}
-                        tintColor={themes[theme].brand}
-                        onValueChange={(p) => {
-                            setChartKey1((prev) => prev + 1);
-                            setPeriod1(p);
-                        }}
-                    />
+            <View className="flat-card flex-3 py-2!">
+                <View className="institution-top-ticker-legend-container">
+                    {/* Title 1 */}
+                    <Text className="institution-title">Theo chỉ số</Text>
+                    {/* sub-segment control */}
+                    <View className="w-[50%]">
+                        <SegmentedControl
+                            values={periods1}
+                            selectedIndex={periods1.indexOf(period1)}
+                            fontStyle={{
+                                color: themes[theme].primary,
+                            }}
+                            tintColor={themes[theme].brand}
+                            onValueChange={(p) => {
+                                setChartKey1((prev) => prev + 1);
+                                setPeriod1(p);
+                            }}
+                        />
+                    </View>
+                </View>
+                {/* BarChart - Index */}
+                <View className="flex-1">
+                    {/* Total Value 1 */}
+                    <Text
+                        className={clsx(
+                            "institution-value",
+                            total1 > 0 ? "text-candle-up" : "text-candle-down",
+                        )}
+                    >
+                        {formatNumber(total1 / 1e9)} B
+                    </Text>
+                    {/* Chart */}
+                    <View
+                        className="flex-1 overflow-hidden"
+                        onLayout={(e) => setChartSize1(e.nativeEvent.layout)}
+                    >
+                        {chartSize1.width && data ? (
+                            <NetIndexChart
+                                key={chartKey1}
+                                valueKey={valueKey}
+                                data={data}
+                                containerSize={chartSize1}
+                                theme={theme}
+                            />
+                        ) : (
+                            <LoadingOverlay />
+                        )}
+                    </View>
+                </View>
+            </View>
+
+            <View className="flat-card flex-4 mb-5 gap-1 py-2!">
+                {/* Title & Legend */}
+                <View className="mb-2 flex-row justify-between items-center">
+                    {/* Title 1 */}
+                    <Text className="institution-title">Theo cổ phiếu</Text>
+                    <View className="w-[60%]">
+                        <SegmentedControl
+                            values={periods2}
+                            selectedIndex={periods2.indexOf(period2)}
+                            fontStyle={{
+                                color: themes[theme].primary,
+                            }}
+                            tintColor={themes[theme].brand}
+                            onValueChange={(p) => {
+                                setChartKey2((prev) => prev + 1);
+                                setPeriod2(p);
+                            }}
+                        />
+                    </View>
                 </View>
 
-                {/* Charts */}
-                <View className="flex-1 gap-5">
-                    {/* BarChart - Index */}
-                    <View className="flex-1">
-                        {/* Title & Legend */}
-                        <View className="mb-2 gap-1">
-                            {/* Title 1 */}
-                            <Text className="institution-title">
-                                Theo chỉ số
-                            </Text>
-                            {/* Total Value 1 */}
-                            <View>
-                                <Text
-                                    className={clsx(
-                                        "institution-value",
-                                        total1 > 0
-                                            ? "text-candle-up"
-                                            : "text-candle-down",
-                                    )}
-                                >
-                                    {formatNumber(total1 / 1e9)} B
-                                </Text>
-                            </View>
-                        </View>
-
-                        {/* Chart */}
-                        <View
-                            className="flex-1 overflow-hidden"
-                            onLayout={(e) =>
-                                setChartSize1(e.nativeEvent.layout)
-                            }
-                        >
-                            {chartSize1.width && data ? (
-                                <NetIndexChart
-                                    key={chartKey1}
-                                    valueKey={valueKey}
-                                    data={data}
-                                    containerSize={chartSize1}
-                                    theme={theme}
-                                />
-                            ) : (
-                                <LoadingOverlay />
-                            )}
-                        </View>
-                    </View>
-
-                    {/* DivergentChart */}
-                    <View className="flex-1">
-                        {/* Title & Legend */}
-                        <View className="mb-2 flex-row justify-between items-center">
-                            {/* Title 1 */}
-                            <Text className="institution-title">
-                                Theo cổ phiếu
-                            </Text>
-                            <View className="w-[50%]">
-                                <SegmentedControl
-                                    values={periods2}
-                                    selectedIndex={periods2.indexOf(period2)}
-                                    fontStyle={{
-                                        color: themes[theme].primary,
-                                    }}
-                                    tintColor={themes[theme].brand}
-                                    onValueChange={(p) => {
-                                        setChartKey2((prev) => prev + 1);
-                                        setPeriod2(p);
-                                    }}
-                                />
-                            </View>
-                        </View>
-
-                        {/* Chart */}
-                        <View
-                            className="flex-1 overflow-hidden"
-                            onLayout={(e) =>
-                                setChartSize2(e.nativeEvent.layout)
-                            }
-                        >
-                            {chartSize2.width && data2 ? (
-                                <TopTickerChart
-                                    theme={theme}
-                                    containerSize={chartSize2}
-                                    data={data2}
-                                    leftKey={leftKey}
-                                    rightKey={rightKey}
-                                    leftLabelColor={themes[theme].candleDown}
-                                    rightLabelColor={themes[theme].candleUp}
-                                    leftValueColor={themes[theme].candleDown}
-                                    rightValueColor={themes[theme].candleUp}
-                                    leftBarColor={themes[theme].candleDown}
-                                    rightBarColor={themes[theme].candleUp}
-                                />
-                            ) : (
-                                <LoadingOverlay />
-                            )}
-                        </View>
-                    </View>
+                {/* Chart */}
+                <View
+                    className="flex-1 overflow-hidden"
+                    onLayout={(e) => setChartSize2(e.nativeEvent.layout)}
+                >
+                    {chartSize2.width && data2 ? (
+                        <TopTickerChart
+                            key={chartKey2}
+                            theme={theme}
+                            containerSize={chartSize2}
+                            data={data2}
+                            leftKey={leftKey}
+                            rightKey={rightKey}
+                            leftLabelColor={themes[theme].candleDown}
+                            rightLabelColor={themes[theme].candleUp}
+                            leftValueColor={themes[theme].candleDown}
+                            rightValueColor={themes[theme].candleUp}
+                            leftBarColor={themes[theme].candleDown}
+                            rightBarColor={themes[theme].candleUp}
+                            // prefix=" B"
+                        />
+                    ) : (
+                        <LoadingOverlay />
+                    )}
                 </View>
             </View>
         </View>
