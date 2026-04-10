@@ -2,6 +2,7 @@ import { themes } from "@/constants/themes";
 import { formatNumber } from "@/lib/utils";
 import { memo, useMemo, useState } from "react";
 import { Text, View } from "react-native";
+import { EaseView } from "react-native-ease";
 import { s } from "react-native-size-matters";
 
 const TopTickerChart = ({
@@ -149,14 +150,28 @@ const TopTickerChart = ({
                                         </View>
 
                                         <View className="institution-bar">
-                                            <View
-                                                className="flex-1 opacity-30"
+                                            {/* Animate */}
+                                            <EaseView
                                                 style={{
+                                                    flex: 1,
+                                                    opacity: 0.3,
                                                     width: item.width,
                                                     backgroundColor:
                                                         leftBarColor,
                                                 }}
-                                            ></View>
+                                                initialAnimate={{
+                                                    scaleX: 0,
+                                                    translateX: -item.width / 2,
+                                                }}
+                                                animate={{
+                                                    scaleX: 1,
+                                                    translateX: 0,
+                                                }}
+                                                transition={{
+                                                    type: "timing",
+                                                    duration: 1000,
+                                                }}
+                                            />
                                             <View
                                                 className="absolute left-2"
                                                 style={{
@@ -220,14 +235,27 @@ const TopTickerChart = ({
                                         </View>
 
                                         <View className="institution-bar">
-                                            <View
-                                                className="flex-1 opacity-30"
+                                            <EaseView
                                                 style={{
+                                                    flex: 1,
+                                                    opacity: 0.3,
                                                     width: item.width,
                                                     backgroundColor:
                                                         rightBarColor,
                                                 }}
-                                            ></View>
+                                                initialAnimate={{
+                                                    scaleX: 0,
+                                                    translateX: -item.width / 2,
+                                                }}
+                                                animate={{
+                                                    scaleX: 1,
+                                                    translateX: 0,
+                                                }}
+                                                transition={{
+                                                    type: "timing",
+                                                    duration: 1000,
+                                                }}
+                                            />
                                             <View className="absolute left-2">
                                                 <Text
                                                     className="text-sm"
