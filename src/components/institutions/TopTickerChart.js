@@ -3,7 +3,6 @@ import { formatNumber } from "@/lib/utils";
 import { memo, useMemo, useState } from "react";
 import { Text, View } from "react-native";
 import { s } from "react-native-size-matters";
-import LoadingOverlay from "../ui/LoadingOverlay";
 
 const TopTickerChart = ({
     theme,
@@ -43,7 +42,7 @@ const TopTickerChart = ({
                 ? (totalBarsHeight - actualBarHeight * numBars) / (numBars - 1)
                 : s(0);
 
-        if (gap <= 0) {
+        if (gap < 1) {
             gap = s(1);
             actualBarHeight = (totalBarsHeight - gap * (numBars - 1)) / numBars;
         }
@@ -116,8 +115,8 @@ const TopTickerChart = ({
                         setChartSize(e.nativeEvent.layout);
                     }}
                 >
-                    {chartConfig ? (
-                        <View className="institution-bars-container">
+                    {chartConfig && (
+                        <View className="institution-bars-container border-r border-blur">
                             {leftData.map((item) => {
                                 return (
                                     <View
@@ -142,8 +141,10 @@ const TopTickerChart = ({
                                                         chartConfig.actualBarHeight /
                                                         2,
                                                 }}
+                                                numberOfLines={1}
+                                                ellipsizeMode="tail"
                                             >
-                                                {item.symbol.slice(0, 3)}
+                                                {item.symbol}
                                             </Text>
                                         </View>
 
@@ -171,7 +172,7 @@ const TopTickerChart = ({
                                                     ]}
                                                 >
                                                     {formatNumber(
-                                                        item.value / 1e9,
+                                                        -item.value / 1e9,
                                                         1,
                                                     )}
                                                     {prefix}
@@ -182,14 +183,12 @@ const TopTickerChart = ({
                                 );
                             })}
                         </View>
-                    ) : (
-                        <LoadingOverlay />
                     )}
                 </View>
 
                 {/* right side */}
                 <View className="flex-1">
-                    {chartConfig ? (
+                    {chartConfig && (
                         <View className="institution-bars-container">
                             {rightData.map((item) => {
                                 return (
@@ -213,8 +212,10 @@ const TopTickerChart = ({
                                                         chartConfig.actualBarHeight /
                                                         2,
                                                 }}
+                                                numberOfLines={1}
+                                                ellipsizeMode="tail"
                                             >
-                                                {item.symbol.slice(0, 3)}
+                                                {item.symbol}
                                             </Text>
                                         </View>
 
@@ -248,8 +249,6 @@ const TopTickerChart = ({
                                 );
                             })}
                         </View>
-                    ) : (
-                        <LoadingOverlay />
                     )}
                 </View>
             </View>

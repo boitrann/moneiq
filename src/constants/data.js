@@ -81446,3 +81446,198 @@ export const TOP_FOREIGN_TRADE = {
         },
     },
 };
+
+export const TOP_PROPRIETARY_TRADE = {
+    "1D": {
+        message: {
+            top10Buy: [
+                {
+                    symbol: "VNM",
+                    value: 173111360000,
+                },
+                {
+                    symbol: "MSN",
+                    value: 169944690000,
+                },
+                {
+                    symbol: "VPB",
+                    value: 166035339000,
+                },
+                {
+                    symbol: "VIX",
+                    value: 153543955000,
+                },
+                {
+                    symbol: "SSI",
+                    value: 116905883000,
+                },
+            ],
+            top10Sell: [
+                {
+                    symbol: "HPG",
+                    value: -404864467000,
+                },
+                {
+                    symbol: "SHB",
+                    value: -78480715000,
+                },
+                {
+                    symbol: "FUEVFVND",
+                    value: -77947644000,
+                },
+                {
+                    symbol: "VHM",
+                    value: -54356020000,
+                },
+                {
+                    symbol: "DGC",
+                    value: -51419266000,
+                },
+            ],
+        },
+    },
+    "1W": {
+        message: {
+            top10Buy: [
+                {
+                    symbol: "VNM",
+                    value: 173111360000,
+                },
+                {
+                    symbol: "MSN",
+                    value: 169944690000,
+                },
+                {
+                    symbol: "VPB",
+                    value: 166035339000,
+                },
+                {
+                    symbol: "VIX",
+                    value: 153543955000,
+                },
+                {
+                    symbol: "SSI",
+                    value: 116905883000,
+                },
+            ],
+            top10Sell: [
+                {
+                    symbol: "HPG",
+                    value: -404864467000,
+                },
+                {
+                    symbol: "SHB",
+                    value: -78480715000,
+                },
+                {
+                    symbol: "FUEVFVND",
+                    value: -77947644000,
+                },
+                {
+                    symbol: "VHM",
+                    value: -54356020000,
+                },
+                {
+                    symbol: "DGC",
+                    value: -51419266000,
+                },
+            ],
+        },
+    },
+    "1M": {
+        message: {
+            top10Buy: [
+                {
+                    symbol: "FPT",
+                    value: 494990611000,
+                },
+                {
+                    symbol: "E1VFVN30",
+                    value: 479684235000,
+                },
+                {
+                    symbol: "ACB",
+                    value: 461605863000,
+                },
+                {
+                    symbol: "CTG",
+                    value: 366485690000,
+                },
+                {
+                    symbol: "MCH",
+                    value: 309993860000,
+                },
+            ],
+            top10Sell: [
+                {
+                    symbol: "HPG",
+                    value: -1216507905000,
+                },
+                {
+                    symbol: "SHS",
+                    value: -728559410000,
+                },
+                {
+                    symbol: "VPX",
+                    value: -626457127000,
+                },
+                {
+                    symbol: "VIX",
+                    value: -371804850000,
+                },
+                {
+                    symbol: "STB",
+                    value: -329713950000,
+                },
+            ],
+        },
+    },
+    "1Y": {
+        message: {
+            top10Buy: [
+                {
+                    symbol: "GEE",
+                    value: 2822568701000,
+                },
+                {
+                    symbol: "E1VFVN30",
+                    value: 2596906141000,
+                },
+                {
+                    symbol: "MCH",
+                    value: 1386634775590,
+                },
+                {
+                    symbol: "GEX",
+                    value: 966904176000,
+                },
+                {
+                    symbol: "MSN",
+                    value: 712452625000,
+                },
+            ],
+            top10Sell: [
+                {
+                    symbol: "VPB",
+                    value: -3283253401000,
+                },
+                {
+                    symbol: "BSR",
+                    value: -712521723000,
+                },
+                {
+                    symbol: "STB",
+                    value: -653782792000,
+                },
+                {
+                    symbol: "VPX",
+                    value: -626457127000,
+                },
+                {
+                    symbol: "SHS",
+                    value: -623931214700,
+                },
+            ],
+        },
+    },
+};

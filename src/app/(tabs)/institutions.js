@@ -6,6 +6,7 @@ import {
     FOREIGN_HISTORY,
     PROPRIETARY_HISTORY,
     TOP_FOREIGN_TRADE,
+    TOP_PROPRIETARY_TRADE,
 } from "@/constants/data";
 import { themes } from "@/constants/themes";
 import { formatNumber } from "@/lib/utils";
@@ -38,17 +39,22 @@ const institutions = () => {
         data2 = TOP_FOREIGN_TRADE[period2];
     } else {
         data = PROPRIETARY_HISTORY[period1];
-        data2 = TOP_FOREIGN_TRADE[period2];
+        data2 = TOP_PROPRIETARY_TRADE[period2];
         valueKey = "netProprietaryValue";
     }
 
     const leftKey = "top10Sell";
     const rightKey = "top10Buy";
 
+    // console.log(chartSize2);
+
     const total1 = data.message?.reduce((t, e) => t + e[valueKey], 0);
     return (
         <View className="h-full gap-2">
-            <PageTitle title="Giao dịch ròng tổ chức" />
+            <PageTitle
+                containerClassName="mb-2!"
+                title="Giao dịch ròng tổ chức"
+            />
 
             <SegmentedControl
                 fontStyle={{
@@ -64,7 +70,12 @@ const institutions = () => {
                 }}
             />
 
-            <View className="flat-card flex-3 py-2!">
+            <View
+                className={clsx(
+                    "flat-card py-2!",
+                    data2.message[leftKey].length > 5 ? "flex-3" : "flex-7",
+                )}
+            >
                 <View className="institution-top-ticker-legend-container">
                     {/* Title 1 */}
                     <Text className="institution-title">Theo chỉ số</Text>
@@ -115,7 +126,12 @@ const institutions = () => {
                 </View>
             </View>
 
-            <View className="flat-card flex-4 mb-5 gap-1 py-2!">
+            <View
+                className={clsx(
+                    "flat-card flex-4 mb-5 gap-1 py-2!",
+                    data2.message[leftKey].length > 5 ? "flex-4" : "flex-3",
+                )}
+            >
                 {/* Title & Legend */}
                 <View className="mb-2 flex-row justify-between items-center">
                     {/* Title 1 */}
@@ -155,7 +171,6 @@ const institutions = () => {
                             rightValueColor={themes[theme].candleUp}
                             leftBarColor={themes[theme].candleDown}
                             rightBarColor={themes[theme].candleUp}
-                            // prefix=" B"
                         />
                     ) : (
                         <LoadingOverlay />

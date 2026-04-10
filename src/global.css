@@ -163,7 +163,7 @@
     }
 
     .institution-top-ticker-label-container {
-        @apply flex-1 h-full items-center justify-center;
+        @apply px-0.5 flex-1 h-full items-center justify-center;
     }
     .institution-top-ticker-label {
         @apply text-center font-semibold;
