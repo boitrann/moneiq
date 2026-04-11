@@ -158,22 +158,22 @@
         @apply font-bold text-sm;
     }
 
+    .institution-top-ticker-col {
+        @apply w-[50%] justify-between;
+    }
+
     .institution-top-ticker-row {
         @apply flex-row items-center;
     }
 
     .institution-top-ticker-label-container {
-        @apply px-0.5 flex-1 h-full items-center justify-center;
+        @apply px-0.5 h-full items-center justify-center;
     }
     .institution-top-ticker-label {
         @apply text-center font-semibold;
     }
 
     .institution-bar {
-        @apply flex-4 justify-center;
-    }
-
-    .institution-bars-container {
-        @apply flex-1 justify-between;
+        @apply flex-4 justify-center overflow-hidden;
     }
 }

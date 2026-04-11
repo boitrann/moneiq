@@ -4,6 +4,7 @@ import { memo, useMemo, useState } from "react";
 import { Text, View } from "react-native";
 import { EaseView } from "react-native-ease";
 import { s } from "react-native-size-matters";
+import PressableCard from "../ui/PressableCard";
 
 const TopTickerChart = ({
     theme,
@@ -29,7 +30,6 @@ const TopTickerChart = ({
     const chartConfig = useMemo(() => {
         if (!chartSize.height || !chartSize.width) return;
 
-        const maxBarWidth = chartSize.width;
         const totalBarsHeight = chartSize.height;
 
         const numBars = Math.max(
@@ -48,11 +48,15 @@ const TopTickerChart = ({
             actualBarHeight = (totalBarsHeight - gap * (numBars - 1)) / numBars;
         }
 
+        const labelWidth = actualBarHeight * 1.8;
+        const maxBarWidth = chartSize.width - labelWidth;
+
         return {
             numBars,
             maxBarWidth,
             actualBarHeight,
             gap,
+            labelWidth,
         };
     }, [containerSize, data, barHeight]);
 
@@ -111,173 +115,185 @@ const TopTickerChart = ({
             <View className="flex-row flex-1">
                 {/* left side */}
                 <View
-                    className="flex-1"
+                    className="institution-top-ticker-col border-r border-r-blur"
                     onLayout={(e) => {
                         setChartSize(e.nativeEvent.layout);
                     }}
                 >
-                    {chartConfig && (
-                        <View className="institution-bars-container border-r border-blur">
-                            {leftData.map((item) => {
-                                return (
+                    {chartConfig &&
+                        leftData.map((item) => {
+                            return (
+                                <PressableCard
+                                    key={item.symbol}
+                                    className="institution-top-ticker-row"
+                                    style={{
+                                        transform: [{ scaleX: -1 }],
+                                        height: chartConfig.actualBarHeight,
+                                    }}
+                                >
                                     <View
-                                        key={item.symbol}
-                                        className="institution-top-ticker-row"
+                                        className="institution-top-ticker-label-container"
                                         style={{
                                             transform: [{ scaleX: -1 }],
-                                            height: chartConfig.actualBarHeight,
+                                            width: chartConfig.labelWidth,
                                         }}
                                     >
-                                        <View
-                                            className="institution-top-ticker-label-container"
+                                        <Text
+                                            className="institution-top-ticker-label"
                                             style={{
+                                                fontSize:
+                                                    chartConfig.actualBarHeight /
+                                                    2,
+                                            }}
+                                            numberOfLines={1}
+                                            ellipsizeMode="tail"
+                                        >
+                                            {item.symbol}
+                                        </Text>
+                                    </View>
+
+                                    <View className="institution-bar">
+                                        {/* Animate */}
+                                        <EaseView
+                                            style={{
+                                                height: "100%",
+                                                opacity: 0.3,
+                                                width: item.width,
+                                                backgroundColor: leftBarColor,
+                                                borderTopEndRadius: s(3),
+                                                borderBottomEndRadius: s(3),
+                                            }}
+                                            initialAnimate={{
+                                                translateX: -item.width,
+                                            }}
+                                            animate={{
+                                                translateX: 0,
+                                            }}
+                                            transition={{
+                                                type: "timing",
+                                                duration: 500,
+                                            }}
+                                        />
+
+                                        <EaseView
+                                            style={{
+                                                position: "absolute",
+                                                left: s(5),
                                                 transform: [{ scaleX: -1 }],
-                                                width: chartConfig.actualBarHeight,
+                                            }}
+                                            initialAnimate={{ opacity: 0 }}
+                                            animate={{ opacity: 1 }}
+                                            transition={{
+                                                type: "timing",
+                                                duration: 1000,
                                             }}
                                         >
                                             <Text
-                                                className="institution-top-ticker-label"
-                                                style={{
-                                                    fontSize:
-                                                        chartConfig.actualBarHeight /
-                                                        2,
-                                                }}
-                                                numberOfLines={1}
-                                                ellipsizeMode="tail"
+                                                className="text-sm"
+                                                style={[
+                                                    !!leftValueColor && {
+                                                        color: leftValueColor,
+                                                    },
+                                                ]}
                                             >
-                                                {item.symbol}
+                                                {formatNumber(
+                                                    -item.value / 1e9,
+                                                    1,
+                                                )}
+                                                {prefix}
                                             </Text>
-                                        </View>
-
-                                        <View className="institution-bar">
-                                            {/* Animate */}
-                                            <EaseView
-                                                style={{
-                                                    flex: 1,
-                                                    opacity: 0.3,
-                                                    width: item.width,
-                                                    backgroundColor:
-                                                        leftBarColor,
-                                                }}
-                                                initialAnimate={{
-                                                    scaleX: 0,
-                                                    translateX: -item.width / 2,
-                                                }}
-                                                animate={{
-                                                    scaleX: 1,
-                                                    translateX: 0,
-                                                }}
-                                                transition={{
-                                                    type: "timing",
-                                                    duration: 1000,
-                                                }}
-                                            />
-                                            <View
-                                                className="absolute left-2"
-                                                style={{
-                                                    transform: [{ scaleX: -1 }],
-                                                }}
-                                            >
-                                                <Text
-                                                    className="text-sm"
-                                                    style={[
-                                                        !!leftValueColor && {
-                                                            color: leftValueColor,
-                                                        },
-                                                    ]}
-                                                >
-                                                    {formatNumber(
-                                                        -item.value / 1e9,
-                                                        1,
-                                                    )}
-                                                    {prefix}
-                                                </Text>
-                                            </View>
-                                        </View>
+                                        </EaseView>
                                     </View>
-                                );
-                            })}
-                        </View>
-                    )}
+                                </PressableCard>
+                            );
+                        })}
                 </View>
 
                 {/* right side */}
-                <View className="flex-1">
-                    {chartConfig && (
-                        <View className="institution-bars-container">
-                            {rightData.map((item) => {
-                                return (
+                <View className="institution-top-ticker-col">
+                    {chartConfig &&
+                        rightData.map((item) => {
+                            return (
+                                <PressableCard
+                                    key={item.symbol}
+                                    className="institution-top-ticker-row"
+                                    style={{
+                                        height: chartConfig.actualBarHeight,
+                                    }}
+                                >
                                     <View
-                                        key={item.symbol}
-                                        className="institution-top-ticker-row"
+                                        className="institution-top-ticker-label-container"
                                         style={{
-                                            height: chartConfig.actualBarHeight,
+                                            width: chartConfig.labelWidth,
                                         }}
                                     >
-                                        <View
-                                            className="institution-top-ticker-label-container"
+                                        <Text
+                                            className="institution-top-ticker-label"
                                             style={{
-                                                width: chartConfig.actualBarHeight,
+                                                fontSize:
+                                                    chartConfig.actualBarHeight /
+                                                    2,
+                                            }}
+                                            numberOfLines={1}
+                                            ellipsizeMode="tail"
+                                        >
+                                            {item.symbol}
+                                        </Text>
+                                    </View>
+
+                                    <View className="institution-bar">
+                                        <EaseView
+                                            style={{
+                                                height: "100%",
+                                                opacity: 0.3,
+                                                width: item.width,
+                                                backgroundColor: rightBarColor,
+
+                                                borderTopEndRadius: s(3),
+                                                borderBottomEndRadius: s(3),
+                                            }}
+                                            initialAnimate={{
+                                                translateX: -item.width,
+                                            }}
+                                            animate={{
+                                                translateX: 0,
+                                            }}
+                                            transition={{
+                                                type: "timing",
+                                                duration: 1000,
+                                            }}
+                                        />
+                                        <EaseView
+                                            style={{
+                                                position: "absolute",
+                                                left: s(5),
+                                            }}
+                                            initialAnimate={{ opacity: 0 }}
+                                            animate={{ opacity: 1 }}
+                                            transition={{
+                                                type: "timing",
+                                                duration: 500,
                                             }}
                                         >
                                             <Text
-                                                className="institution-top-ticker-label"
-                                                style={{
-                                                    fontSize:
-                                                        chartConfig.actualBarHeight /
-                                                        2,
-                                                }}
-                                                numberOfLines={1}
-                                                ellipsizeMode="tail"
+                                                className="text-sm"
+                                                style={[
+                                                    !!rightValueColor && {
+                                                        color: rightValueColor,
+                                                    },
+                                                ]}
                                             >
-                                                {item.symbol}
+                                                {formatNumber(
+                                                    item.value / 1e9,
+                                                    1,
+                                                )}
+                                                {prefix}
                                             </Text>
-                                        </View>
-
-                                        <View className="institution-bar">
-                                            <EaseView
-                                                style={{
-                                                    flex: 1,
-                                                    opacity: 0.3,
-                                                    width: item.width,
-                                                    backgroundColor:
-                                                        rightBarColor,
-                                                }}
-                                                initialAnimate={{
-                                                    scaleX: 0,
-                                                    translateX: -item.width / 2,
-                                                }}
-                                                animate={{
-                                                    scaleX: 1,
-                                                    translateX: 0,
-                                                }}
-                                                transition={{
-                                                    type: "timing",
-                                                    duration: 1000,
-                                                }}
-                                            />
-                                            <View className="absolute left-2">
-                                                <Text
-                                                    className="text-sm"
-                                                    style={[
-                                                        !!rightValueColor && {
-                                                            color: rightValueColor,
-                                                        },
-                                                    ]}
-                                                >
-                                                    {formatNumber(
-                                                        item.value / 1e9,
-                                                        1,
-                                                    )}
-                                                    {prefix}
-                                                </Text>
-                                            </View>
-                                        </View>
+                                        </EaseView>
                                     </View>
-                                );
-                            })}
-                        </View>
-                    )}
+                                </PressableCard>
+                            );
+                        })}
                 </View>
             </View>
         </View>

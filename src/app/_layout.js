@@ -1,3 +1,4 @@
+import { annotationStack } from "@/constants/data";
 import { themes } from "@/constants/themes";
 import "@/global.css";
 import { Stack } from "expo-router";
@@ -21,7 +22,19 @@ export default function RootLayout() {
                         headerShown: false,
                         contentStyle: { backgroundColor: themes[theme].brand },
                     }}
-                />
+                >
+                    {annotationStack.map((a) => (
+                        <Stack.Screen
+                            key={a.name}
+                            name={a.name}
+                            options={{
+                                headerShown: true,
+                                title: a.title,
+                                presentation: "modal",
+                            }}
+                        />
+                    ))}
+                </Stack>
             </SafeAreaView>
         </>
     );

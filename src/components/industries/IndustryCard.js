@@ -1,9 +1,10 @@
 import { themes } from "@/constants/themes";
 import clsx from "clsx";
 import { memo, useMemo, useState } from "react";
-import { Pressable, Text, useWindowDimensions, View } from "react-native";
+import { Text, useWindowDimensions, View } from "react-native";
 import { LineChart } from "react-native-gifted-charts";
 import { s } from "react-native-size-matters";
+import PressableCard from "../ui/PressableCard";
 
 const IndustryCard = ({ theme, industryData, onPress }) => {
     const [chartHeight, setChartHeight] = useState();
@@ -66,80 +67,81 @@ const IndustryCard = ({ theme, industryData, onPress }) => {
     }, [chartHeight, calculatedData]);
 
     return (
-        <Pressable
-            onPress={onPress}
-            style={{ width: windowWidth / 2.5 }}
-            className="flat-card p-2! h-32 active:opacity-70"
-        >
-            {/* Top */}
-            <View className="industry-card-top">
-                <View>
-                    <Text
-                        numberOfLines={1}
-                        ellipsizeMode="tail"
-                        className="industry-card-title-text"
-                    >
-                        {calculatedData?.title || ""}
-                    </Text>
-                </View>
-                <View className="industry-card-meta-row">
+        <PressableCard onPress={onPress}>
+            <View
+                style={{ width: windowWidth / 2.5 }}
+                className="flat-card p-2! h-32 active:opacity-70"
+            >
+                {/* Top */}
+                <View className="industry-card-top">
                     <View>
                         <Text
-                            className={clsx(
-                                "industry-card-percent",
-                                calculatedData?.percent > 0
-                                    ? "text-candle-up"
-                                    : calculatedData?.percent < 0
-                                      ? "text-candle-down"
-                                      : "text-candle-flat",
-                            )}
+                            numberOfLines={1}
+                            ellipsizeMode="tail"
+                            className="industry-card-title-text"
                         >
-                            {calculatedData?.percent != null
-                                ? calculatedData.percent.toFixed(2)
-                                : "0.00"}
-                            %
+                            {calculatedData?.title || ""}
                         </Text>
                     </View>
+                    <View className="industry-card-meta-row">
+                        <View>
+                            <Text
+                                className={clsx(
+                                    "industry-card-percent",
+                                    calculatedData?.percent > 0
+                                        ? "text-candle-up"
+                                        : calculatedData?.percent < 0
+                                          ? "text-candle-down"
+                                          : "text-candle-flat",
+                                )}
+                            >
+                                {calculatedData?.percent != null
+                                    ? calculatedData.percent.toFixed(2)
+                                    : "0.00"}
+                                %
+                            </Text>
+                        </View>
+                    </View>
+                </View>
+
+                {/* Bottom */}
+                <View
+                    className="industry-card-bottom"
+                    onLayout={(e) => {
+                        const { height } = e.nativeEvent.layout;
+                        if (height !== chartHeight) setChartHeight(height);
+                    }}
+                    // style={{ transform: [{ translateY: s(2) }] }}
+                >
+                    {chartConfig && (
+                        <LineChart
+                            data={chartConfig.data}
+                            color={chartConfig.color}
+                            hideDataPoints
+                            areaChart
+                            startFillColor={chartConfig.color}
+                            endFillColor={chartConfig.color}
+                            startOpacity={0.3}
+                            endOpacity={0}
+                            thickness={s(1.2)}
+                            yAxisExtraHeight={chartConfig.yAxisExtraHeight}
+                            xAxisLabelsHeight={chartConfig.xAxisLabelsHeight}
+                            height={chartConfig.height}
+                            hideRules
+                            initialSpacing={0}
+                            yAxisLabelWidth={chartConfig.yAxisLabelWidth}
+                            endSpacing={chartConfig.endSpacing}
+                            width={chartConfig.width}
+                            adjustToWidth
+                            disableScroll
+                            yAxisOffset={Math.floor(calculatedData.min)}
+                            yAxisThickness={0}
+                            xAxisThickness={0}
+                        />
+                    )}
                 </View>
             </View>
-
-            {/* Bottom */}
-            <View
-                className="industry-card-bottom"
-                onLayout={(e) => {
-                    const { height } = e.nativeEvent.layout;
-                    if (height !== chartHeight) setChartHeight(height);
-                }}
-                // style={{ transform: [{ translateY: s(2) }] }}
-            >
-                {chartConfig && (
-                    <LineChart
-                        data={chartConfig.data}
-                        color={chartConfig.color}
-                        hideDataPoints
-                        areaChart
-                        startFillColor={chartConfig.color}
-                        endFillColor={chartConfig.color}
-                        startOpacity={0.3}
-                        endOpacity={0}
-                        thickness={s(1.2)}
-                        yAxisExtraHeight={chartConfig.yAxisExtraHeight}
-                        xAxisLabelsHeight={chartConfig.xAxisLabelsHeight}
-                        height={chartConfig.height}
-                        hideRules
-                        initialSpacing={0}
-                        yAxisLabelWidth={chartConfig.yAxisLabelWidth}
-                        endSpacing={chartConfig.endSpacing}
-                        width={chartConfig.width}
-                        adjustToWidth
-                        disableScroll
-                        yAxisOffset={Math.floor(calculatedData.min)}
-                        yAxisThickness={0}
-                        xAxisThickness={0}
-                    />
-                )}
-            </View>
-        </Pressable>
+        </PressableCard>
     );
 };
 

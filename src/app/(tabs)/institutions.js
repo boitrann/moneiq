@@ -14,12 +14,10 @@ import SegmentedControl from "@react-native-segmented-control/segmented-control"
 import clsx from "clsx";
 import { useState } from "react";
 import { Appearance, Text, View } from "react-native";
+import { EaseView } from "react-native-ease";
 
 const institutions = () => {
     const theme = Appearance.getColorScheme();
-
-    const [chartKey1, setChartKey1] = useState(0);
-    const [chartKey2, setChartKey2] = useState(0);
 
     const [chartSize1, setChartSize1] = useState({});
     const [chartSize2, setChartSize2] = useState({});
@@ -64,8 +62,6 @@ const institutions = () => {
                 selectedIndex={segments.indexOf(segment)}
                 values={segments}
                 onValueChange={(s) => {
-                    setChartKey1((prev) => prev + 1);
-                    setChartKey2((prev) => prev + 1);
                     setSegment(s);
                 }}
             />
@@ -88,24 +84,30 @@ const institutions = () => {
                                 color: themes[theme].primary,
                             }}
                             tintColor={themes[theme].brand}
-                            onValueChange={(p) => {
-                                setChartKey1((prev) => prev + 1);
-                                setPeriod1(p);
-                            }}
+                            onValueChange={(p) => setPeriod1(p)}
                         />
                     </View>
                 </View>
                 {/* BarChart - Index */}
                 <View className="flex-1">
                     {/* Total Value 1 */}
-                    <Text
-                        className={clsx(
-                            "institution-value",
-                            total1 > 0 ? "text-candle-up" : "text-candle-down",
-                        )}
+                    <EaseView
+                        key={period1}
+                        initialAnimate={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ type: "timing", duration: 500 }}
                     >
-                        {formatNumber(total1 / 1e9)} B
-                    </Text>
+                        <Text
+                            className={clsx(
+                                "institution-value",
+                                total1 > 0
+                                    ? "text-candle-up"
+                                    : "text-candle-down",
+                            )}
+                        >
+                            {formatNumber(total1 / 1e9)} B
+                        </Text>
+                    </EaseView>
                     {/* Chart */}
                     <View
                         className="flex-1 overflow-hidden"
@@ -113,7 +115,7 @@ const institutions = () => {
                     >
                         {chartSize1.width && data ? (
                             <NetIndexChart
-                                key={chartKey1}
+                                key={period1}
                                 valueKey={valueKey}
                                 data={data}
                                 containerSize={chartSize1}
@@ -144,10 +146,7 @@ const institutions = () => {
                                 color: themes[theme].primary,
                             }}
                             tintColor={themes[theme].brand}
-                            onValueChange={(p) => {
-                                setChartKey2((prev) => prev + 1);
-                                setPeriod2(p);
-                            }}
+                            onValueChange={(p) => setPeriod2(p)}
                         />
                     </View>
                 </View>
@@ -159,7 +158,7 @@ const institutions = () => {
                 >
                     {chartSize2.width && data2 ? (
                         <TopTickerChart
-                            key={chartKey2}
+                            key={period2}
                             theme={theme}
                             containerSize={chartSize2}
                             data={data2}

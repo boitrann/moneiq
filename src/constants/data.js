@@ -5,6 +5,17 @@ export const tabs = [
     // { name: "settings", title: "Cài đặt" },
 ];
 
+export const annotationStack = [
+    {
+        name: "(annotations)/statisticAnnotation",
+        title: "Xác suất đầu tư ngắn hạn",
+    },
+    {
+        name: "(annotations)/spreadAnnotation",
+        title: "Đà lan tỏa theo vốn hóa",
+    },
+];
+
 export const INDUSTRIES_HISTORICAL = {
     101010: [
         {
