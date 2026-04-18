@@ -19,6 +19,8 @@ const NetIndexChart = ({
     theme,
     textSize = s(11),
 }) => {
+    // console.log("containerSize:", containerSize);
+
     const processed = useMemo(() => {
         const arr = data.message.map((m) => ({
             value: m[valueKey],

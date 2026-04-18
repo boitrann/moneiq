@@ -171,7 +171,7 @@ const TopTickerChart = ({
                                             }}
                                             transition={{
                                                 type: "timing",
-                                                duration: 500,
+                                                duration: 1000,
                                             }}
                                         />
 
@@ -272,7 +272,7 @@ const TopTickerChart = ({
                                             animate={{ opacity: 1 }}
                                             transition={{
                                                 type: "timing",
-                                                duration: 500,
+                                                duration: 1000,
                                             }}
                                         >
                                             <Text

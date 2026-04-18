@@ -4,15 +4,24 @@ import LoadingOverlay from "@/components/ui/LoadingOverlay";
 import PageTitle from "@/components/ui/PageTitle";
 import { INDEX_SCORECARD } from "@/constants/data";
 import { themes } from "@/constants/themes";
+import { getIndexScoreCard } from "@/services/appwrite";
 import SegmentedControl from "@react-native-segmented-control/segmented-control";
 import { useRouter } from "expo-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Appearance, Text, View } from "react-native";
 import { s } from "react-native-size-matters";
 
 const statistics = () => {
     const router = useRouter();
     const theme = Appearance.getColorScheme();
+
+    useEffect(() => {
+        async function f() {
+            await getIndexScoreCard();
+        }
+
+        f();
+    }, []);
 
     const [chartKey1, setChartKey1] = useState(0);
     const [chartKey2, setChartKey2] = useState(0);

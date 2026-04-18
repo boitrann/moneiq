@@ -19,6 +19,9 @@ import { EaseView } from "react-native-ease";
 const institutions = () => {
     const theme = Appearance.getColorScheme();
 
+    const [chartKey1, setChartKey1] = useState(0);
+    const [chartKey2, setChartKey2] = useState(0);
+
     const [chartSize1, setChartSize1] = useState({});
     const [chartSize2, setChartSize2] = useState({});
 
@@ -63,6 +66,10 @@ const institutions = () => {
                 values={segments}
                 onValueChange={(s) => {
                     setSegment(s);
+                    setChartSize1({});
+                    setChartSize2({});
+                    setChartKey1((prev) => prev + 1);
+                    setChartKey2((prev) => prev + 1);
                 }}
             />
 
@@ -84,7 +91,10 @@ const institutions = () => {
                                 color: themes[theme].primary,
                             }}
                             tintColor={themes[theme].brand}
-                            onValueChange={(p) => setPeriod1(p)}
+                            onValueChange={(p) => {
+                                setPeriod1(p);
+                                setChartKey1((prev) => prev + 1);
+                            }}
                         />
                     </View>
                 </View>
@@ -92,7 +102,7 @@ const institutions = () => {
                 <View className="flex-1">
                     {/* Total Value 1 */}
                     <EaseView
-                        key={period1}
+                        key={chartKey1}
                         initialAnimate={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         transition={{ type: "timing", duration: 500 }}
@@ -111,11 +121,16 @@ const institutions = () => {
                     {/* Chart */}
                     <View
                         className="flex-1 overflow-hidden"
-                        onLayout={(e) => setChartSize1(e.nativeEvent.layout)}
+                        onLayout={(e) => {
+                            const layout = e.nativeEvent.layout;
+                            // console.log("layout:", layout);
+
+                            setChartSize1(layout);
+                        }}
                     >
                         {chartSize1.width && data ? (
                             <NetIndexChart
-                                key={period1}
+                                key={chartKey1}
                                 valueKey={valueKey}
                                 data={data}
                                 containerSize={chartSize1}
@@ -146,7 +161,10 @@ const institutions = () => {
                                 color: themes[theme].primary,
                             }}
                             tintColor={themes[theme].brand}
-                            onValueChange={(p) => setPeriod2(p)}
+                            onValueChange={(p) => {
+                                setPeriod2(p);
+                                setChartKey2((prev) => prev + 1);
+                            }}
                         />
                     </View>
                 </View>
@@ -158,7 +176,7 @@ const institutions = () => {
                 >
                     {chartSize2.width && data2 ? (
                         <TopTickerChart
-                            key={period2}
+                            key={chartKey2}
                             theme={theme}
                             containerSize={chartSize2}
                             data={data2}
