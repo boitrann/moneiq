@@ -7,13 +7,25 @@ const DATABASE_ID = process.env.EXPO_PUBLIC_APPWRITE_DATABASE_ID;
 const client = new Client().setEndpoint(ENDPOINT).setProject(PROJECT_ID);
 const tablesDB = new TablesDB(client);
 
-export const getIndexScoreCard = async () => {
-    const result = await tablesDB.listRows({
+async function _listDataHSC(tableId) {
+    return await tablesDB.listRows({
         databaseId: DATABASE_ID,
-        tableId: "indexscorecard",
+        tableId,
     });
+}
 
-    console.log(result);
+async function _retrieveDataHSC(tableId, period) {
+    return await tablesDB.getRow({
+        databaseId: DATABASE_ID,
+        tableId,
+        rowId: period,
+    });
+}
 
-    return result;
+export const listIndexScoreCard = async () => {
+    return await _listDataHSC("indexscorecard");
+};
+
+export const retrieveIndexScoreCard = async (period) => {
+    return await _retrieveDataHSC("indexscorecard", period);
 };
