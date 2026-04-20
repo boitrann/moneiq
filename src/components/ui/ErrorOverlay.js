@@ -1,12 +1,7 @@
 import clsx from "clsx";
-import { ActivityIndicator, Text, View } from "react-native";
+import { Text, View } from "react-native";
 
-const LoadingOverlay = ({
-    size,
-    message,
-    containerClassName,
-    textClassName,
-}) => {
+const ErrorOverlay = ({ message, containerClassName, textClassName }) => {
     return (
         <View
             className={clsx(
@@ -14,7 +9,6 @@ const LoadingOverlay = ({
                 containerClassName,
             )}
         >
-            <ActivityIndicator size={size} />
             <Text className={clsx("text-primary opacity-60", textClassName)}>
                 {message}
             </Text>
@@ -22,4 +16,4 @@ const LoadingOverlay = ({
     );
 };
 
-export default LoadingOverlay;
+export default ErrorOverlay;

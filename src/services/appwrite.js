@@ -22,10 +22,48 @@ async function _retrieveDataHSC(tableId, period) {
     });
 }
 
-export const listIndexScoreCard = async () => {
-    return await _listDataHSC("indexscorecard");
+export const retrieveForeignHistorical = async (period) => {
+    try {
+        return await _retrieveDataHSC(
+            "ForeignHistorical".toLowerCase(),
+            period,
+        );
+    } catch (error) {
+        throw new Error(`retrieveForeignHistorical failed: ${error.message}`);
+    }
 };
 
-export const retrieveIndexScoreCard = async (period) => {
-    return await _retrieveDataHSC("indexscorecard", period);
+export const retrieveTopForeignTrade = async (period) => {
+    try {
+        return await _retrieveDataHSC(
+            "TopForeignTrade".toLocaleUpperCase(),
+            period,
+        );
+    } catch (error) {
+        throw new Error(`retrieveTopForeignTrade failed: ${error.message}`);
+    }
+};
+
+export const retrieveProprietaryHistorical = async (period) => {
+    try {
+        return await _retrieveDataHSC(
+            "ProprietaryHistorical".toLowerCase(),
+            period,
+        );
+    } catch (error) {
+        throw new Error(
+            `retrieveProprietaryHistorical failed: ${error.message}`,
+        );
+    }
+};
+
+export const retrieveTopProprietaryTrade = async (period) => {
+    try {
+        return await _retrieveDataHSC(
+            "TopProprietaryTrade".toLocaleUpperCase(),
+            period,
+        );
+    } catch (error) {
+        throw new Error(`retrieveTopProprietaryTrade failed: ${error.message}`);
+    }
 };
