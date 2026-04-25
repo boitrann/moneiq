@@ -86,7 +86,7 @@
     }
 
     .statistic-pointer-card {
-        @apply mt-3 bg-brand gap-2 p-2 w-35 rounded-lg shadow-xl;
+        @apply mt-3 bg-brand gap-2 p-2 rounded-lg shadow-xl;
     }
 
     .statistic-pointer-date {

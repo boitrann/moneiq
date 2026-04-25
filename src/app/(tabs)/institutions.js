@@ -3,26 +3,22 @@ import TopTickerChart from "@/components/institutions/TopTickerChart";
 import ErrorOverlay from "@/components/ui/ErrorOverlay";
 import LoadingOverlay from "@/components/ui/LoadingOverlay";
 import PageTitle from "@/components/ui/PageTitle";
+import {
+    FOREIGN_HISTORY,
+    PROPRIETARY_HISTORY,
+    TOP_FOREIGN_TRADE,
+    TOP_PROPRIETARY_TRADE,
+} from "@/constants/data";
 import { themes } from "@/constants/themes";
 import { formatNumber } from "@/lib/utils";
-import {
-    retrieveForeignHistorical,
-    retrieveProprietaryHistorical,
-    retrieveTopForeignTrade,
-    retrieveTopProprietaryTrade,
-} from "@/services/appwrite";
 import SegmentedControl from "@react-native-segmented-control/segmented-control";
-import { useQuery } from "@tanstack/react-query";
 import clsx from "clsx";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Appearance, Text, View } from "react-native";
 import { EaseView } from "react-native-ease";
 
 const institutions = () => {
     const theme = Appearance.getColorScheme();
-
-    const [chartKey1, setChartKey1] = useState(0);
-    const [chartKey2, setChartKey2] = useState(0);
 
     const [chartSize1, setChartSize1] = useState({});
     const [chartSize2, setChartSize2] = useState({});
@@ -35,14 +31,24 @@ const institutions = () => {
     const periods1 = ["1W", "1M", "1Y"];
     const periods2 = ["1D", "1W", "1M", "1Y"];
 
-    const { data, isLoading, error } = useQuery({
-        queryKey: ["institution-data", segment, period1],
-        queryFn: () =>
-            segment === "Nước ngoài"
-                ? retrieveForeignHistorical(period1)
-                : retrieveProprietaryHistorical(period1),
-        select: (data) => JSON.parse(JSON.parse(data.data).result),
-    });
+    // const { data, isLoading, error } = useQuery({
+    //     queryKey: ["institution-data", segment, period1],
+    //     queryFn: () =>
+    //         segment === "Nước ngoài"
+    //             ? retrieveForeignHistorical(period1)
+    //             : retrieveProprietaryHistorical(period1),
+    //     select: (data) => JSON.parse(JSON.parse(data.data).result),
+    //     placeholderData: (prev) => prev,
+    // });
+
+    const data = useMemo(() => {
+        return segment === "Nước ngoài"
+            ? FOREIGN_HISTORY[period1]
+            : PROPRIETARY_HISTORY[period1];
+    }, [segment, period1]);
+    const isLoading = false;
+    const error = undefined;
+
     const valueKey =
         segment === "Nước ngoài" ? "netForeignValue" : "netProprietaryValue";
 
@@ -52,30 +58,30 @@ const institutions = () => {
             return t + val;
         }, 0) ?? 0;
 
-    const {
-        data: data2,
-        isLoading: isLoading2,
-        error: error2,
-    } = useQuery({
-        queryKey: ["top-trade-data", segment, period2],
-        queryFn: () =>
-            segment === "Nước ngoài"
-                ? retrieveTopForeignTrade(period2)
-                : retrieveTopProprietaryTrade(period2),
-        select: (data) => JSON.parse(JSON.parse(data.data).result),
-    });
+    // const {
+    //     data: data2,
+    //     isLoading: isLoading2,
+    //     error: error2,
+    // } = useQuery({
+    //     queryKey: ["top-trade-data", segment, period2],
+    //     queryFn: () =>
+    //         segment === "Nước ngoài"
+    //             ? retrieveTopForeignTrade(period2)
+    //             : retrieveTopProprietaryTrade(period2),
+    //     select: (data) => JSON.parse(JSON.parse(data.data).result),
+    //     placeholderData: (prev) => prev,
+    // });
+
+    const data2 = useMemo(() => {
+        return segment === "Nước ngoài"
+            ? TOP_FOREIGN_TRADE[period2]
+            : TOP_PROPRIETARY_TRADE[period2];
+    }, [segment, period2]);
+    const isLoading2 = false;
+    const error2 = undefined;
+
     const leftKey = "top10Sell";
     const rightKey = "top10Buy";
-
-    if (segment === "Nước ngoài") {
-        // data = FOREIGN_HISTORY[period1];
-        // data2 = TOP_FOREIGN_TRADE[period2];
-    } else {
-        // data = PROPRIETARY_HISTORY[period1];
-        // data2 = TOP_PROPRIETARY_TRADE[period2];
-    }
-
-    // console.log(total);
 
     return (
         <View className="h-full gap-2">
@@ -91,13 +97,7 @@ const institutions = () => {
                 tintColor={themes[theme].brand}
                 selectedIndex={segments.indexOf(segment)}
                 values={segments}
-                onValueChange={(s) => {
-                    setSegment(s);
-                    setChartSize1({});
-                    setChartSize2({});
-                    setChartKey1((prev) => prev + 1);
-                    setChartKey2((prev) => prev + 1);
-                }}
+                onValueChange={(s) => setSegment(s)}
             />
 
             <View
@@ -124,7 +124,6 @@ const institutions = () => {
                             tintColor={themes[theme].brand}
                             onValueChange={(p) => {
                                 setPeriod1(p);
-                                setChartKey1((prev) => prev + 1);
                             }}
                         />
                     </View>
@@ -133,7 +132,7 @@ const institutions = () => {
                 <View className="flex-1">
                     {/* Total Value 1 */}
                     <EaseView
-                        key={chartKey1}
+                        key={`${period1}-${chartSize1.width}-${chartSize1.height}`}
                         initialAnimate={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         transition={{ type: "timing", duration: 500 }}
@@ -162,7 +161,7 @@ const institutions = () => {
                             chartSize1.width &&
                             chartSize1.height && (
                                 <NetIndexChart
-                                    key={chartKey1}
+                                    key={`${period1}-${chartSize1.width}-${chartSize1.height}`}
                                     valueKey={valueKey}
                                     data={data}
                                     containerSize={chartSize1}
@@ -196,10 +195,7 @@ const institutions = () => {
                                 color: themes[theme].primary,
                             }}
                             tintColor={themes[theme].brand}
-                            onValueChange={(p) => {
-                                setPeriod2(p);
-                                setChartKey2((prev) => prev + 1);
-                            }}
+                            onValueChange={(p) => setPeriod2(p)}
                         />
                     </View>
                 </View>
@@ -217,7 +213,7 @@ const institutions = () => {
                         chartSize2.width &&
                         chartSize2.height && (
                             <TopTickerChart
-                                key={chartKey2}
+                                key={period2}
                                 theme={theme}
                                 containerSize={chartSize2}
                                 data={data2}

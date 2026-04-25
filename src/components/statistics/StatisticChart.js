@@ -24,6 +24,7 @@ const StatisticChart = ({
         const arr1 = data.message.map((msg, idx) => {
             const isLabelled = idx === 0 || idx === Math.round(length / 2);
             const isLastPoint = idx === length - 1;
+            const xLabelWidth = textSize * 3;
             return {
                 tradingDate: msg.trading_date,
                 value: msg[key1],
@@ -31,12 +32,16 @@ const StatisticChart = ({
                     ? {
                           labelComponent: () => (
                               <View
+                                  className="justify-center"
                                   style={{
-                                      height: textSize * 1.5,
-                                      width: textSize * 3,
-                                      justifyContent: "center",
-                                      marginLeft:
-                                          isLastPoint && -textSize * 2.5,
+                                      width: xLabelWidth,
+                                      transform: [
+                                          {
+                                              translateX: isLastPoint
+                                                  ? -xLabelWidth
+                                                  : 0,
+                                          },
+                                      ],
                                   }}
                               >
                                   <Text
@@ -105,7 +110,10 @@ const StatisticChart = ({
             isAnimated
             disableScroll
             curved
-            hideDataPoints
+            hideDataPoints1
+            hideDataPoints2
+            dataPointsRadius={s(5)}
+            customDataPoint={() => {}}
             adjustToWidth
             areaChart1
             width={chartConfig.width}
@@ -140,18 +148,25 @@ const StatisticChart = ({
             xAxisColor={labelColor}
             xAxisLabelsHeight={chartConfig.xAxisLabelsHeight}
             pointerConfig={{
+                activatePointersInstantlyOnTouch: true,
                 pointerStripColor: labelColor,
                 pointerColor: color1,
                 pointer2Color: color2,
                 pointerLabelComponent: (items, _, idx) => {
+                    const width = s(100);
                     return (
                         <View
                             className="statistic-pointer-card"
                             style={{
-                                transform:
-                                    idx >= processedData.length / 2
-                                        ? [{ translateX: s(-90) }]
-                                        : [{ translateX: s(15) }],
+                                width,
+                                transform: [
+                                    {
+                                        translateX:
+                                            idx >= processedData.length / 2
+                                                ? -width
+                                                : 0,
+                                    },
+                                ],
                             }}
                         >
                             {/* Date */}

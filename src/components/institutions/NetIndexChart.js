@@ -19,17 +19,17 @@ const NetIndexChart = ({
     theme,
     textSize = s(11),
 }) => {
-    // console.log("containerSize:", containerSize);
-
     const processed = useMemo(() => {
-        const arr = data.message.map((m) => ({
-            value: m[valueKey],
-            updatedAt: m.updatedAt,
-            frontColor:
-                m[valueKey] >= 0
-                    ? themes[theme].candleUp
-                    : themes[theme].candleDown,
-        }));
+        const arr = data.message
+            .map((m) => ({
+                value: m[valueKey],
+                updatedAt: m.updatedAt,
+                frontColor:
+                    m[valueKey] >= 0
+                        ? themes[theme].candleUp
+                        : themes[theme].candleDown,
+            }))
+            .sort((a, b) => new Date(a.updatedAt) - new Date(b.updatedAt));
         const chartData = arr.slice(-15);
         const max = Math.max(...chartData.map((v) => v.value));
         const min = Math.min(...chartData.map((v) => v.value));
@@ -37,6 +37,8 @@ const NetIndexChart = ({
 
         return { chartData, max, min, length };
     }, [data]);
+
+    // console.log(processed.chartData);
 
     const chartConfig = useMemo(() => {
         // Height
@@ -67,7 +69,7 @@ const NetIndexChart = ({
 
         // Width
         const yAxisLabelWidth = maxAbs / 1e9 < 9000 ? s(45) : s(50);
-        const barWidth = length >= 10 ? s(10) : length >= 5 ? s(20) : s(50);
+        const barWidth = length >= 10 ? s(10) : length >= 5 ? s(20) : s(30);
         const initialSpacing =
             length >= 10 ? s(8) : length >= 5 ? s(25) : s(35);
         const endSpacing = initialSpacing;
@@ -89,6 +91,8 @@ const NetIndexChart = ({
         };
 
         const minHeight = s(2);
+
+        // console.log("re-calculate", height, stepHeight, noOfSections);
 
         return {
             spacing,
